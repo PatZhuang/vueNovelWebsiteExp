@@ -23,7 +23,7 @@
     <a href="" class="navItem navItem-odd">医学</a>
     </Col>
     <Col :sm="19" >
-      <Col :sm="18" id="row-1-col-2">
+      <Col :sm="17" id="row-1-col-2">
       <Carousel v-model="carouselIndex" :autoplay="CarouselSetting.autoplay" :autoplay-speed="CarouselSetting.autoplaySpeed" :dots="CarouselSetting.dots"
         :trigger="CarouselSetting.trigger" :arrow="CarouselSetting.arrow" class="main-carousel">
         <Carousel-item>
@@ -40,7 +40,7 @@
         </Carousel-item>
       </Carousel>
       </Col>
-      <Col :sm="{span: 5}">
+      <Col :sm="{span: 6}">
       <Card id="notice-card">
         <p slot="title">一段文字</p>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio rerum laboriosam quia modi saepe vitae iusto,
@@ -123,7 +123,6 @@
 
   #row-1-col-2>* {
     margin-left: 20px;
-    margin-right: 20px;
   }
 
   .carousel-img {
@@ -133,6 +132,7 @@
 
   #notice-card {
     margin-top: 10px;
+    margin-left: 20px;
     height: 250px;
   }
 
