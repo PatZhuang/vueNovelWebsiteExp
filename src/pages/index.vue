@@ -76,8 +76,17 @@
     <!--推荐栏-->
     <recommend></recommend>
     <br>
+    <br>
+    <!--广告行1-->
+    <ad-row :ads="ad1"></ad-row>
+    <br>
+    <br>
     <!--榜单栏-->
     <trending></trending>
+    <br>
+    <br>
+    <!--广告行2-->
+    <ad-row :ads="ad2"></ad-row>
     <br>
     <!--电子书栏-->
     <ebook></ebook>
@@ -90,12 +99,14 @@
   import recommendPage from '../pages/recommendPage.vue'
   import trendingPage from '../pages/trendingPage.vue'
   import ebookPage from '../pages/ebookPage.vue'
+  import adrow from '../components/adrow.vue'
   export default {
     name: 'index',
     components: {
       'recommend': recommendPage,
       'trending': trendingPage,
       'ebook': ebookPage,
+      'ad-row': adrow,
     },
     data() {
       return {
@@ -109,6 +120,40 @@
           trigger: 'click',
           arrow: 'hover',
         },
+        ad1: [{
+            href: '#/',
+            img: require('../assets/ads/1.jpeg')
+          },
+          {
+            href: '#/',
+            img: require('../assets/ads/2.jpeg')
+          },
+          {
+            href: '#/',
+            img: require('../assets/ads/3.jpeg')
+          },
+          {
+            href: '#/',
+            img: require('../assets/ads/4.jpeg')
+          },
+        ],
+        ad2: [{
+            href: '#/',
+            img: require('../assets/ads/5.jpeg')
+          },
+          {
+            href: '#/',
+            img: require('../assets/ads/6.jpeg')
+          },
+          {
+            href: '#/',
+            img: require('../assets/ads/7.jpeg')
+          },
+          {
+            href: '#/',
+            img: require('../assets/ads/8.jpeg')
+          },
+        ],
       }
     },
     methods: {

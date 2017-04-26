@@ -154,17 +154,40 @@
           dots: 'outside',
           autoplay: true,
         },
-        bookStore1: [
-          {title: '被遗忘与被仰望的', price: 45.50, description: '20世纪最伟大的非虚构书写，全世界特稿写作者的典范'},
-          {title: '百鬼夜行 阳', price: 34.30, description: '\"世界上没有不可思议的事\"，京极夏彦的妖怪十夜谈'},
-          {title: '造物', price: 47.60, description: '改变世界的玩物图点，3000幅图里的发明与冒险'},
+        bookStore1: [{
+            title: '被遗忘与被仰望的',
+            price: 45.50,
+            description: '20世纪最伟大的非虚构书写，全世界特稿写作者的典范'
+          },
+          {
+            title: '百鬼夜行 阳',
+            price: 34.30,
+            description: '\"世界上没有不可思议的事\"，京极夏彦的妖怪十夜谈'
+          },
+          {
+            title: '造物',
+            price: 47.60,
+            description: '改变世界的玩物图点，3000幅图里的发明与冒险'
+          },
         ],
-        bookStore2: [
-          {title: '山之四季', price: 22.40, description: '一个人在山里住七年，日本桂冠诗人山居笔记'},
-          {title: '现世', price: 27.30, description: '时间和世界的秘密，普利策奖得主的万物之书'},
-          {title: '我在天堂那五年', price: 33.60, description: '不可思议的友谊奇迹，人生路上柔软的智慧之光'},
+        bookStore2: [{
+            title: '山之四季',
+            price: 22.40,
+            description: '一个人在山里住七年，日本桂冠诗人山居笔记'
+          },
+          {
+            title: '现世',
+            price: 27.30,
+            description: '时间和世界的秘密，普利策奖得主的万物之书'
+          },
+          {
+            title: '我在天堂那五年',
+            price: 33.60,
+            description: '不可思议的友谊奇迹，人生路上柔软的智慧之光'
+          },
         ],
       }
+
     }
   }
 </script>
