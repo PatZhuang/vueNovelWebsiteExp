@@ -77,28 +77,34 @@
         <h1>VueTest</h1>
       </Col>
       <Col :xs="{span: 14, offset: 2}" :sm="12">
-        <Input>
-          <Button slot="append" icon="ios-search"></Button>
-        </Input>
+        <el-input
+          v-model="searchInput"
+          icon="search"
+        >
+
+        </el-input>
       </Col>
       <Col :xs="{span: 2, offset: 2}" :sm="4">
-        <Button type="ghost" icon="ios-bookmarks" @click="showNothing">
-          <span v-if="notXsDevice">一个按钮</span>
-        </Button>
+        <el-button icon="share" @click="showNothing">
+          一个按钮
+        </el-button>
       </Col>
     </Row>
 
     <Menu mode="horizontal" :theme="theme" active-name="1" id="mainNav" @on-select="activeMenuItem($event)">
       <Menu-item name="1" :class="['mainNav-item', {'mainNav-item-actived': activedMenuItem['1']}]">
-        <Icon type="ios-home"></Icon>
+        <!--<Icon type="ios-home"></Icon>-->
+        <i class="el-icon-star-on"></i>
         首页
       </Menu-item>
       <Menu-item name="2" :class="['mainNav-item', {'mainNav-item-actived': activedMenuItem['2']}]">
-        <Icon type="ios-nutrition"></Icon>
+        <!--<Icon type="ios-nutrition"></Icon>-->
+        <i class="el-icon-menu"></i>
         分类浏览
       </Menu-item>
       <Menu-item name="3" :class="['mainNav-item', {'mainNav-item-actived': activedMenuItem['3']}]">
-        <Icon type="ios-paper"></Icon>
+        <!--<Icon type="ios-paper"></Icon>-->
+        <i class="el-icon-upload"></i>
        电子图书
       </Menu-item>
     </Menu>
@@ -119,11 +125,15 @@ export default {
       search: '',     //搜索框值
       notXsDevice: window.innerWidth > 768, //判断当前页面宽度
       activedMenuItem: {"1": true, "2": false}, //Menu item 样式设置需要
+      searchInput: '',
     }
   },
   methods: {
     showNothing: function () {
-      this.$Message.info('啥都没有');
+      this.$message({
+        message: '啥都没有',
+        type: 'success'
+      });
     },
     activeMenuItem: function (itemIndex) {
       for (var item in this.activedMenuItem) {
