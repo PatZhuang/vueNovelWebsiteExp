@@ -33,7 +33,7 @@
     }
 
     .ad-img:hover {
-        box-shadow: 3px 3px 3px  lightgray;
+        box-shadow: 3px 3px 3px #b3b3b3;
     }
 
     .ad-img {

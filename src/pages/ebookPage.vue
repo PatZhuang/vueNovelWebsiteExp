@@ -11,7 +11,7 @@
                     <Col span="4" v-for="ebook in ebooks.slice(0, 5)">
                         <Card :bordered="false" dis-hover>
                             <div style="text-align: left">
-                                <a href="#/"><img :src='ebook.cover' alt="" style="width: 100%"></a>
+                                <a href="#/"><img :src='ebook.cover' alt="" class="book-cover" style="width: 100%"></a>
                                 <a href="#/" class="link small-text">{{ebook.title}}</a>
                                 <p class="small-text">￥{{ebook.price}}</p>
                             </div>
@@ -22,7 +22,7 @@
                     <Col span="4" v-for="ebook in ebooks.slice(5)">
                         <Card :bordered="false" dis-hover>
                             <div style="text-align: left">
-                                <a href="#/"><img :src='ebook.cover' alt="" style="width: 100%"></a>
+                                <a href="#/"><img :src='ebook.cover' alt="" class="book-cover" style="width: 100%"></a>
                                 <a href="#/" class="link small-text">{{ebook.title}}</a>
                                 <p class="small-text">￥{{ebook.price}}</p>
                             </div>
@@ -126,4 +126,17 @@
       font-weight: normal;
     }
 
+    .book-cover {
+        width: 100%;
+    }
+
+    .book-cover:hover {
+        box-shadow: 4px 4px 4px #b3b3b3;
+    }
+
+    .book-cover {
+        -webkit-transition: box-shadow .2s;
+        -moz-transition: box-shadow .2s;
+        transition: box-shadow .2s;
+    }
 </style>
