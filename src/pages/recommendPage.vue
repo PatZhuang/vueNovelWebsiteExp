@@ -6,16 +6,16 @@
       </Col>
       <Col :sm="4">
         <Card :bordered="false" :dis-hover="true" :padding="0">
-          <p slot="title">新书速递</p>
+          <p slot="title" style="margin-bottom: 3px">新书速递</p>
           <p v-for="book in newBooks" :key="book.title" class="book-bulletin-item">
             <span class="book-bulletin-title"><a href="#/">{{ book.title }}</a></span>
-            <span class="book-bulletin-author">{{ book.author }}</span>
+            <span class="book-bulletin-author"><a href="#/">{{ book.author }}</a></span>
           </p>
         </Card>
       </Col>
       <Col :sm="14" style="padding: 0px 10px">
         <Row>
-          <el-carousel :interval="4000" type="card" height="120px">
+          <el-carousel :interval="4000" type="card" height="131px">
             <el-carousel-item v-for="item in 4">
             </el-carousel-item>
           </el-carousel>
@@ -51,7 +51,7 @@
           <p slot="title">最受关注图书</p>
           <p v-for="book in popBooks" :key="book.title" class="book-bulletin-item">
             <span class="book-bulletin-title"><a href="#/">{{ book.title }}</a></span>
-            <span class="book-bulletin-author">{{ book.author }}</span>
+            <span class="book-bulletin-author"><a href="#/">{{ book.author }}</a></span>
           </p>
         </Card>
       </Col>
@@ -175,11 +175,18 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 2px;
+    padding: 0px 2px;
+    padding-top: 14px;
   }
   
   .book-bulletin-title {
-    font-size: 16px;
+    /*display: inline-block;*/
+    text-align: left;
+    width: 60%;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   .book-bulletin-title>a {
@@ -192,9 +199,22 @@
 
   .book-bulletin-author {
     font-size: 12px;
-    color: #ccc;
+    display: inline-block;
+    text-align: right;
+    width: 40%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
   
+  .book-bulletin-author>a {
+    color: #b3b3b3;
+  }
+
+  .book-bulletin-author>a:hover {
+    color: #27ae60;
+  } 
+
   .book-description {
     font-size: 13px;
     color: #666;
@@ -225,15 +245,6 @@
     background-color: #ccc;
     margin: 0 1%;
     width: auto;
-  }
-
-  .book-carousel-item {
-    height: 120px;
-    background-color: #27ae60;
-  }
-
-  .book-carousel {
-    margin: 0 10px;
   }
 
   .el-carousel {
