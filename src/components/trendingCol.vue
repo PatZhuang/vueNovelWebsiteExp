@@ -14,14 +14,14 @@
                         {{index + 1}}
                     </Tag>
                 </Col>    
-                <Col span="12" style="text-align: left"><a href="#" class="">{{bookItem.bookTitle}}</a></Col>
+                <Col span="12" style="text-align: left"><a href="#/" class="">{{bookItem.bookTitle}}</a></Col>
                 <Col span="6" style="text-align: left">
                 <el-rate
                     :value="bookItem.rate/2"
                     disabled
                     :colors="['#99A9BF', '#F7BA2A', '#FF9900']"
                     text-color="#ff9900"
-                    style="display:flex; align-items: flex-end"
+                    style="position: relative; bottom: 1px"
                     >
                 </el-rate>
                 </Col>
@@ -82,7 +82,6 @@
 
     .book-item-rate-text {
         color: #ff9900;
-        margin-top: 2px;
         font-weight: 500;
     }
 

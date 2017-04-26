@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Row type="flex" align="top" justify="center">
+    <Row type="flex" justify="center">
       <Col :sm="1">
       <!--占位-->
       </Col>
@@ -8,37 +8,23 @@
         <Card :bordered="false" :dis-hover="true" :padding="0">
           <p slot="title">新书速递</p>
           <p v-for="book in newBooks" :key="book.title" class="book-bulletin-item">
-            <span class="book-bulletin-title"><a href="">{{ book.title }}</a></span>
+            <span class="book-bulletin-title"><a href="#/">{{ book.title }}</a></span>
             <span class="book-bulletin-author">{{ book.author }}</span>
           </p>
         </Card>
       </Col>
       <Col :sm="14" style="padding: 0px 10px">
         <Row>
-          <Carousel 
-          v-model="bookCarousel" 
-          :dots="bookCarouselSetting.dots" 
-          :autoplay="bookCarouselSetting.autoplay"
-          class="book-carousel">
-              <Carousel-item>
-                  <div class="book-carousel-item" style="background-color: #2ecc71"></div>
-              </Carousel-item>
-              <Carousel-item>
-                  <div class="book-carousel-item" style="background-color: #27ae60"></div>
-              </Carousel-item>
-              <Carousel-item>
-                  <div class="book-carousel-item" style="background-color: #1abc9c"></div>
-              </Carousel-item>
-              <Carousel-item>
-                <div class="book-carousel-item" style="background-color: #16a085"></div>
-              </Carousel-item>
-          </Carousel>
+          <el-carousel :interval="4000" type="card" height="120px">
+            <el-carousel-item v-for="item in 4">
+            </el-carousel-item>
+          </el-carousel>
         </Row>
         <Row>
           <Col :sm="8" v-for="book in bookStore1" :key="book.title">
             <Card class="card-info" :padding="10" :dis-hover="true" :bordered="false">
               <div>
-                <a href="">{{book.title}}</a>
+                <a href="#/">{{book.title}}</a>
                 <p class='book-price'>￥{{book.price}}</p>
                 <p class="book-description">{{book.description}}</p> 
               </div>
@@ -52,7 +38,7 @@
           <Col :sm="8" v-for="book in bookStore2" :key="book.title">
             <Card class="card-info" :padding="10" :dis-hover="true" :bordered="false">
               <div>
-                <a href="">{{book.title}}</a>
+                <a href="#/">{{book.title}}</a>
                 <p class='book-price'>￥{{book.price}}</p>
                 <p class="book-description">{{book.description}}</p> 
               </div>
@@ -64,7 +50,7 @@
         <Card :bordered="false" :dis-hover="true" :padding="0">
           <p slot="title">最受关注图书</p>
           <p v-for="book in popBooks" :key="book.title" class="book-bulletin-item">
-            <span class="book-bulletin-title"><a href="">{{ book.title }}</a></span>
+            <span class="book-bulletin-title"><a href="#/">{{ book.title }}</a></span>
             <span class="book-bulletin-author">{{ book.author }}</span>
           </p>
         </Card>
@@ -248,5 +234,16 @@
 
   .book-carousel {
     margin: 0 10px;
+  }
+
+  .el-carousel {
+    margin: 0 10px;
+  }
+  .el-carousel__item:nth-child(2n) {
+    background-color: #2ecc71;
+  }
+  
+  .el-carousel__item:nth-child(2n+1) {
+    background-color: #2ecc71;
   }
 </style>

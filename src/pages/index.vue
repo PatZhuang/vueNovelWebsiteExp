@@ -1,28 +1,28 @@
 <template>
   <div>
-    <Row type="flex" justify="center" align="top">
+    <Row type="flex" justify="center">
       <Col :sm="1"></Col>
       <Col :sm="{span: 4}">
-        <a href="" class="navItem navItem-odd">文学</a>
-        <a href="" class="navItem navItem-odd">流行</a>
+        <a href="#/" class="navItem navItem-odd">文学</a>
+        <a href="#/" class="navItem navItem-odd">流行</a>
         <div></div>
-        <a href="" class="navItem navItem-even">文化</a>
-        <a href="" class="navItem navItem-even">生活</a>
+        <a href="#/" class="navItem navItem-even">文化</a>
+        <a href="#/" class="navItem navItem-even">生活</a>
         <div></div>
-        <a href="" class="navItem navItem-odd">经管</a>
-        <a href="" class="navItem navItem-odd">科技</a>
+        <a href="#/" class="navItem navItem-odd">经管</a>
+        <a href="#/" class="navItem navItem-odd">科技</a>
         <div></div>
-        <a href="" class="navItem navItem-even">哲学</a>
-        <a href="" class="navItem navItem-even">法学</a>
+        <a href="#/" class="navItem navItem-even">哲学</a>
+        <a href="#/" class="navItem navItem-even">法学</a>
         <div></div>
-        <a href="" class="navItem navItem-odd">教育学</a>
-        <a href="" class="navItem navItem-odd">历史学</a>
+        <a href="#/" class="navItem navItem-odd">教育学</a>
+        <a href="#/" class="navItem navItem-odd">历史学</a>
         <div></div>
-        <a href="" class="navItem navItem-even">理学</a>
-        <a href="" class="navItem navItem-even">工学</a>
+        <a href="#/" class="navItem navItem-even">理学</a>
+        <a href="#/" class="navItem navItem-even">工学</a>
         <div></div>
-        <a href="" class="navItem navItem-odd">农学</a>
-        <a href="" class="navItem navItem-odd">医学</a>
+        <a href="#/" class="navItem navItem-odd">农学</a>
+        <a href="#/" class="navItem navItem-odd">医学</a>
       </Col>
       <Col :sm="19">
         <Col :sm="17" id="row-1-col-2">
@@ -77,17 +77,21 @@
     <br>
     <trending></trending>
     <br>
+    <ebook></ebook>
+    <br>
   </div>
 </template>
 
 <script>
   import recommendPage from '../pages/recommendPage.vue'
   import trendingPage from '../pages/trendingPage.vue'
+  import ebookPage from '../pages/ebookPage.vue'
   export default {
     name: 'index',
     components: {
       'recommend': recommendPage,
       'trending': trendingPage,
+      'ebook': ebookPage,
     },
     data() {
       return {

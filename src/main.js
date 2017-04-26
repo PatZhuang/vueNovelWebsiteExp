@@ -5,13 +5,14 @@ import App from './App'
 import router from './router'
 import iView from '../node_modules/iview'
 import '../node_modules/iview/dist/styles/iview.css'
-import {Rate, Tag} from 'element-ui'
+import {Rate, Carousel, CarouselItem} from 'element-ui'
 
 Vue.config.productionTip = false
 
 Vue.use(iView)
 Vue.use(Rate)
-Vue.use(Tag)
+Vue.use(Carousel)
+Vue.use(CarouselItem)
 
 /* eslint-disable no-new */
 new Vue({
