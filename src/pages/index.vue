@@ -74,15 +74,20 @@
     </Row>
     <br>
     <recommend></recommend>
+    <br>
+    <trending></trending>
+    <br>
   </div>
 </template>
 
 <script>
   import recommendPage from '../pages/recommendPage.vue'
+  import trendingPage from '../pages/trendingPage.vue'
   export default {
     name: 'index',
     components: {
       'recommend': recommendPage,
+      'trending': trendingPage,
     },
     data() {
       return {

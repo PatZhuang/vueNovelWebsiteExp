@@ -80,6 +80,7 @@
   export default {
     data() {
       return {
+        name: 'recommendPage',
         newBooks: [{
             title: '星星上的人',
             author: '卡罗琳·帕克斯特'
