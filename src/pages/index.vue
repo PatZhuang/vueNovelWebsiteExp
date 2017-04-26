@@ -154,7 +154,7 @@
   .adcards {
     float: left;
     height: 150px;
-    width: 304px;
+    width: 30%;
     margin: 5px 0px 0px 20px;
     background-color: #ecf0f1;
   }

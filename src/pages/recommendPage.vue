@@ -7,7 +7,7 @@
       <Col :sm="4">
         <Card :bordered="false" :dis-hover="true" :padding="0">
           <p slot="title">新书速递</p>
-          <p v-for="book in newBooks" class="book-bulletin-item">
+          <p v-for="book in newBooks" :key="book.title" class="book-bulletin-item">
             <span class="book-bulletin-title"><a href="">{{ book.title }}</a></span>
             <span class="book-bulletin-author">{{ book.author }}</span>
           </p>
@@ -35,7 +35,7 @@
           </Carousel>
         </Row>
         <Row>
-          <Col :sm="8" v-for="book in bookStore1">
+          <Col :sm="8" v-for="book in bookStore1" :key="book.title">
             <Card class="card-info" :padding="10" :dis-hover="true" :bordered="false">
               <div>
                 <a href="">{{book.title}}</a>
@@ -49,7 +49,7 @@
         <hr style="margin: 0px 15px">
         <br>
         <Row>
-          <Col :sm="8" v-for="book in bookStore2">
+          <Col :sm="8" v-for="book in bookStore2" :key="book.title">
             <Card class="card-info" :padding="10" :dis-hover="true" :bordered="false">
               <div>
                 <a href="">{{book.title}}</a>
@@ -63,7 +63,7 @@
       <Col :sm="4">
         <Card :bordered="false" :dis-hover="true" :padding="0">
           <p slot="title">最受关注图书</p>
-          <p v-for="book in popBooks" class="book-bulletin-item">
+          <p v-for="book in popBooks" :key="book.title" class="book-bulletin-item">
             <span class="book-bulletin-title"><a href="">{{ book.title }}</a></span>
             <span class="book-bulletin-author">{{ book.author }}</span>
           </p>
@@ -184,7 +184,7 @@
 </script>
 
 
-<style lang="">
+<style>
   .book-bulletin-item {
     display: flex;
     align-items: center;
