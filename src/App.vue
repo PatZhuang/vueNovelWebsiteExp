@@ -90,15 +90,20 @@
 
     <Menu mode="horizontal" :theme="theme" active-name="1" id="mainNav" @on-select="activeMenuItem($event)">
       <Menu-item name="1" :class="['mainNav-item', {'mainNav-item-actived': activedMenuItem['1']}]">
-        <Icon type="ios-paper"></Icon>
+        <Icon type="ios-home"></Icon>
         首页
       </Menu-item>
       <Menu-item name="2" :class="['mainNav-item', {'mainNav-item-actived': activedMenuItem['2']}]">
-        <Icon type="ios-people"></Icon>
+        <Icon type="ios-nutrition"></Icon>
         分类浏览
+      </Menu-item>
+      <Menu-item name="3" :class="['mainNav-item', {'mainNav-item-actived': activedMenuItem['3']}]">
+        <Icon type="ios-paper"></Icon>
+       电子图书
       </Menu-item>
     </Menu>
     <router-view></router-view>
+    <hr>
     <div class="layout-copy">
       2017-2018 &copy; Patrick
     </div>    
@@ -139,7 +144,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -169,6 +174,16 @@ export default {
   background-color: rgb(49, 48, 53);
   border-top: 2px solid #27ae60;
 }
+
+hr {
+    border: none;
+    height: 1px;
+    background-color: lightgray;
+    margin: 0 5%;
+    margin-top: 15px;
+    width: auto;
+  }
+
 </style>
 
 <style>

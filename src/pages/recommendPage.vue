@@ -46,7 +46,7 @@
           </Col>
         </Row>
         <br>
-        <hr style="margin: 0px 15px">
+        <hr>
         <br>
         <Row>
           <Col :sm="8" v-for="book in bookStore2" :key="book.title">
@@ -184,7 +184,7 @@
 </script>
 
 
-<style>
+<style scoped>
   .book-bulletin-item {
     display: flex;
     align-items: center;
@@ -234,12 +234,11 @@
   }
 
   hr {
-    display: block;
+    border: none;
     height: 1px;
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 1em 0px;
-    padding: 0; 
+    background-color: #ccc;
+    margin: 0 1%;
+    width: auto;
   }
 
   .book-carousel-item {
