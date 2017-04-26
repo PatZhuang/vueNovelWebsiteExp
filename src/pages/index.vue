@@ -79,6 +79,7 @@
     <br>
     <ebook></ebook>
     <br>
+    <Back-top></Back-top>
   </div>
 </template>
 
