@@ -49,7 +49,7 @@
 
 .layout-ceiling-right a:hover, #ceiling-register:hover{
   /*登录、注册按钮 hover 状态颜色*/
-  color: rgb(234, 68, 92);
+  color: #27ae60;
 }
 
 .layout-ceiling-right span {
@@ -62,14 +62,14 @@
     <!--顶栏-->
     <div class="layout-ceiling">
       <div class="layout-ceiling-right">
-        <a href="#">登录</a> 
+        <a href="#/">登录</a> 
         <span>|</span>
-        <a href="#" id="ceiling-register">注册</a>
+        <a href="#/" id="ceiling-register">注册</a>
       </div>
     </div>
   
     <!--Logo、搜索框一行-->
-    <Row type="flex" justify="center" align="middle" style="margin: 15px 0px; ">
+    <Row type="flex" justify="center" align="middle" class="row">
       <Col :xs="2" :sm="{span: 1, offset: 1}" class="Col-logo">
         <img src="../src/assets/logo.png" alt="logo" id='logo' class="layout-logo">
       </Col>
@@ -184,6 +184,9 @@ hr {
     width: auto;
   }
 
+.row {
+   margin: 15px 0px;
+}
 </style>
 
 <style>

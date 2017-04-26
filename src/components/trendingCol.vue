@@ -2,7 +2,7 @@
     <Card :bordered="true">
         <p slot="title">{{colTitle}}</p>
         <p class="book-item" v-for="(bookItem, index) in item">
-            <Row type="flex" justify="space-between" align="center">
+            <Row type="flex" justify="space-between">
                 <Col span="4">
                     <Tag 
                     :class="['book-item-tag', 

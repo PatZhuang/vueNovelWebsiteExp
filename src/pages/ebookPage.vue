@@ -2,14 +2,14 @@
     <Row type="flex" justify="space-between">
         <Col span="1"></Col>
         <Col span="22">
-            <Card :bordered="false" dis-hover="false">
+            <Card :bordered="false" dis-hover>
                 <p slot="title" id="ebook-card-title">
                     电子图书
                     <span><a href="#/" class="link small-text" style="margin-left: 10px;">查看更多>></a></span>
                 </p>
-                <Row type="flex" align="center" justify="space-between">
+                <Row type="flex" justify="space-between">
                     <Col span="4" v-for="ebook in ebooks.slice(0, 5)">
-                        <Card :bordered="false" dis-hover="false">
+                        <Card :bordered="false" dis-hover>
                             <div style="text-align: left">
                                 <a href="#/"><img :src='ebook.cover' alt="" style="width: 100%"></a>
                                 <a href="#/" class="link small-text">{{ebook.title}}</a>
@@ -18,9 +18,9 @@
                         </Card>
                     </Col>
                 </Row>
-                <Row type="flex" align="center" justify="space-between">
+                <Row type="flex" justify="space-between">
                     <Col span="4" v-for="ebook in ebooks.slice(5)">
-                        <Card :bordered="false" dis-hover="false">
+                        <Card :bordered="false" dis-hover>
                             <div style="text-align: left">
                                 <a href="#/"><img :src='ebook.cover' alt="" style="width: 100%"></a>
                                 <a href="#/" class="link small-text">{{ebook.title}}</a>

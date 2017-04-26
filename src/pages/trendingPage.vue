@@ -1,5 +1,5 @@
 <template>
-    <Row type="flex" justify="space-around" align="top" style="margin: 0 32px">
+    <Row type="flex" justify="space-around" style="margin: 0 32px">
         <Col :sm="{span: 11}">
             <trending-col :colTitle="colTitleFirst" :item="colItemFirst"></trending-col>
         </Col>

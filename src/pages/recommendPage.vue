@@ -5,7 +5,7 @@
       <!--占位-->
       </Col>
       <Col :sm="4">
-        <Card :bordered="false" :dis-hover="true" :padding="0">
+        <Card :bordered="false" dis-hover :padding="0">
           <p slot="title" style="margin-bottom: 3px">新书速递</p>
           <p v-for="book in newBooks" :key="book.title" class="book-bulletin-item">
             <span class="book-bulletin-title"><a href="#/">{{ book.title }}</a></span>
@@ -22,7 +22,7 @@
         </Row>
         <Row>
           <Col :sm="8" v-for="book in bookStore1" :key="book.title">
-            <Card class="card-info" :padding="10" :dis-hover="true" :bordered="false">
+            <Card class="card-info" :padding="10" dis-hover :bordered="false">
               <div>
                 <a href="#/">{{book.title}}</a>
                 <p class='book-price'>￥{{book.price}}</p>
@@ -36,7 +36,7 @@
         <br>
         <Row>
           <Col :sm="8" v-for="book in bookStore2" :key="book.title">
-            <Card class="card-info" :padding="10" :dis-hover="true" :bordered="false">
+            <Card class="card-info" :padding="10" dis-hover :bordered="false">
               <div>
                 <a href="#/">{{book.title}}</a>
                 <p class='book-price'>￥{{book.price}}</p>
@@ -47,7 +47,7 @@
         </Row>
       </Col>
       <Col :sm="4">
-        <Card :bordered="false" :dis-hover="true" :padding="0">
+        <Card :bordered="false" dis-hover :padding="0">
           <p slot="title">最受关注图书</p>
           <p v-for="book in popBooks" :key="book.title" class="book-bulletin-item">
             <span class="book-bulletin-title"><a href="#/">{{ book.title }}</a></span>
