@@ -79,14 +79,6 @@
     <!--榜单栏-->
     <trending></trending>
     <br>
-    <Row>
-      <Col span="1"></Col>
-      <Col span="22">
-        <img src="../assets/ad1.jpeg" alt="ad">
-      </Col>
-      <Col span="1"></Col>
-    </Row>
-    <br>
     <!--电子书栏-->
     <ebook></ebook>
     <br>
