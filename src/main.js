@@ -3,8 +3,8 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import iView from '../node_modules/iview'
-import '../node_modules/iview/dist/styles/iview.css'
+import iView from 'iview'
+import 'iview/dist/styles/iview.css'
 import {Rate, Carousel, CarouselItem} from 'element-ui'
 
 Vue.config.productionTip = false
