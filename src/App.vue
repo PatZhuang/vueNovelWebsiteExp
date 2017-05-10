@@ -37,24 +37,24 @@
   margin-right: 15px;
 }
 
-.layout-ceiling-right a {
-  color: rgb(38, 38, 38);
-  margin-right: 5px;
-  margin-left: 5px;
-}
-
-#ceiling-register {
-  color: #aaa;
-}
-
-.layout-ceiling-right a:hover, #ceiling-register:hover{
-  /*登录、注册按钮 hover 状态颜色*/
-  color: #27ae60;
-}
-
 .layout-ceiling-right span {
   color: #ccc;
 }
+
+.layout-ceiling-btns {
+  color: rgb(38, 38, 38);
+  margin-right: 5px;
+  margin-left: 5px;
+  background: none;
+  padding: 0;
+  border: none;
+  font-size: 12px;
+}
+
+.layout-ceiling-btns:hover {
+  color: #27ae60;
+}
+
 </style>
 
 <template>
@@ -62,12 +62,36 @@
     <!--顶栏-->
     <div class="layout-ceiling">
       <div class="layout-ceiling-right">
-        <a href="#/">登录</a> 
-        <span>|</span>
-        <a href="#/" id="ceiling-register">注册</a>
+        <div v-if="!signed">
+          <el-button type="text" class="layout-ceiling-btns" @click="loginModal = true">登录</el-button>
+          <span>|</span>
+          <el-button type="text" class="layout-ceiling-btns" style="color: #aaa">注册</el-button>
+        </div>
+        <div v-else>
+          <el-button class="layout-ceiling-btns">{{ ID }}</el-button>
+        </div>
       </div>
     </div>
   
+    <!--登录框-->
+    <Modal v-model="loginModal" width="450">
+        <p slot="header" style="color:#27ae60;text-align:center">
+          账号登录
+        </p>
+        <div>
+          <el-form ref="form" :model="form">
+          <el-input placehoder="请输入用户名" class="modal-login">
+            <template slot="prepend">用户名：</template>
+          </el-input>
+          <el-input placehoder="请输入密码" type="password" class="modal-login">
+            <template slot="prepend">密码： &nbsp;&nbsp;&nbsp;</template>
+          </el-input>
+          </el-form>
+        </div>
+        <div slot="footer">
+            <Button type="success" size="large" long>登录</Button>
+        </div>
+    </Modal>
     <!--Logo、搜索框一行-->
     <Row type="flex" justify="center" align="middle" class="row">
       <Col :xs="2" :sm="{span: 1, offset: 1}" class="Col-logo">
@@ -126,6 +150,14 @@ export default {
       notXsDevice: window.innerWidth > 768, //判断当前页面宽度
       activedMenuItem: {"1": true, "2": false}, //Menu item 样式设置需要
       searchInput: '',
+
+      loginModal: false,
+
+      signed: false,
+      ID: "",
+      form: {
+
+      },
     }
   },
   methods: {
@@ -197,8 +229,9 @@ hr {
 .row {
    margin: 15px 0px;
 }
-</style>
 
-<style>
-
+.modal-login {
+  margin: 10px; 
+  width: auto;
+}
 </style>

@@ -12,6 +12,10 @@
   "dependencies": {
     "element-ui": "^1.2.9",
     "iview": "^2.0.0-rc.11",
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-router": "^7.1.1",
+    "koa-static": "^3.0.0",
     "vue": "^2.2.6",
     "vue-router": "^2.3.1"
   },
