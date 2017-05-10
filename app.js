@@ -24,6 +24,27 @@ router.get('/', async(ctx, next) => {
     ctx.response.redirect('index.html');
 });
 
+router.post('/login', async (ctx, next) => {
+    var
+        id = ctx.request.body.id || '',
+        password = ctx.request.body.password || '';
+    ctx.response.body = {
+        id: id,
+        status: 'success'
+    }
+    ctx.cookies.set(
+      'cid', 
+      id,
+      {
+        domain: 'localhost',  // 写cookie所在的域名
+        path: '/',       // 写cookie所在的路径
+        maxAge: 10 * 60 * 1000, // cookie有效时长
+        httpOnly: false,  // 是否只用于http请求中获取
+        overwrite: false  // 是否允许重写
+      }
+    )
+});
+
 app.use(router.routes());
 app.use(server(path.resolve('./dist')));
 // 在端口3000监听:

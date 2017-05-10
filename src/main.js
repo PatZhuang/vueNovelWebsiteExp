@@ -8,11 +8,14 @@ import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import ElementUI from 'element-ui'
 
+import axios from 'axios'
+Vue.prototype.$http = axios
+
 Vue.config.productionTip = false
 
 Vue.use(iView)
 Vue.use(ElementUI)
-
+Vue.use(axios)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

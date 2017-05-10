@@ -37,7 +37,7 @@
   margin-right: 15px;
 }
 
-.layout-ceiling-right span {
+.layout-ceiling-right .separator {
   color: #ccc;
 }
 
@@ -62,13 +62,15 @@
     <!--顶栏-->
     <div class="layout-ceiling">
       <div class="layout-ceiling-right">
-        <div v-if="!signed">
+        <div v-show="!signed">
           <el-button type="text" class="layout-ceiling-btns" @click="loginModal = true">登录</el-button>
-          <span>|</span>
+          <span class="separator">|</span>
           <el-button type="text" class="layout-ceiling-btns" style="color: #aaa">注册</el-button>
         </div>
-        <div v-else>
+        <div v-show="signed">
+          <span>Hello, </span>
           <el-button class="layout-ceiling-btns">{{ ID }}</el-button>
+          <el-button type="text" class="layout-ceiling-btns" @click="logout" style="color: #aaa">退出登录</el-button>
         </div>
       </div>
     </div>
@@ -79,17 +81,17 @@
           账号登录
         </p>
         <div>
-          <el-form ref="form" :model="form">
-          <el-input placehoder="请输入用户名" class="modal-login">
+          <el-form ref="form" v-model="form">
+          <el-input placehoder="请输入用户名" class="modal-login" v-model="form.id">
             <template slot="prepend">用户名：</template>
           </el-input>
-          <el-input placehoder="请输入密码" type="password" class="modal-login">
+          <el-input placehoder="请输入密码" type="password" class="modal-login" v-model="form.password">
             <template slot="prepend">密码： &nbsp;&nbsp;&nbsp;</template>
           </el-input>
           </el-form>
         </div>
         <div slot="footer">
-            <Button type="success" size="large" long>登录</Button>
+            <Button type="success" size="large" long @click="submit">登录</Button>
         </div>
     </Modal>
     <!--Logo、搜索框一行-->
@@ -156,8 +158,10 @@ export default {
       signed: false,
       ID: "",
       form: {
-
+        id: '',
+        password: '',
       },
+      id: "",
     }
   },
   methods: {
@@ -175,12 +179,45 @@ export default {
           this.activedMenuItem[item] = false;
         }
       }
+    },
+    submit: function () {
+      var that = this;
+      this.$http.post('/login', {
+        id: this.form.id,
+        password: this.form.password
+      })
+      .then(function (response) {
+        console.log(response);
+        console.log(response.data.id);
+        that.ID = response.data.id;
+        that.signed = true;
+        console.log(that.ID);
+        console.log(that.signed);
+        that.form = {
+          id: '',
+          password: ''
+        };
+      })
+      .catch(function (error) {
+        
+      });
+      this.loginModal = false;
+    },
+    logout: function () {
+      document.cookie = "cid=;expires=;path=/";
+      this.ID = "";
+      this.signed = false;
     }
   },
   mounted: function () {
     var that = this;
     window.onresize = function () {
       that.notXsDevice = window.innerWidth > 768;
+    };
+    this.ID = document.cookie.replace(/(?:(?:^|.*;\s*)cid\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "";
+    if (this.ID !== "") {
+      console.log(this.ID);
+      this.signed = true;
     }
   }
 }
