@@ -24,6 +24,26 @@ router.get('/', async(ctx, next) => {
     ctx.response.redirect('index.html');
 });
 
+
+router.get('/logout', async (ctx, next) => {
+    var now = new Date();
+    var time = now.getTime();
+    time -= 60 * 1000;
+    now.setTime(time);
+    ctx.cookies.set(
+      'cid', 
+      undefined,
+      {
+        domain: 'localhost',  // 写cookie所在的域名
+        path: '/',       // 写cookie所在的路径
+        expires: now,
+      }
+    )
+    ctx.response.body = {
+        status: 200
+    }
+});
+
 router.post('/login', async (ctx, next) => {
     var
         id = ctx.request.body.id || '',

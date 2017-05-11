@@ -199,14 +199,24 @@ export default {
         };
       })
       .catch(function (error) {
-        
+        console.log(error);
       });
       this.loginModal = false;
     },
     logout: function () {
-      document.cookie = "cid=;expires=;path=/";
-      this.ID = "";
-      this.signed = false;
+      var that = this;
+      this.$http.get('/logout')
+      .then(function (response) {
+        that.ID = "";
+        that.signed = false;
+        that.$message({
+          message: '已退出登录。',
+          type: 'success'
+        });  
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     }
   },
   mounted: function () {
@@ -215,7 +225,7 @@ export default {
       that.notXsDevice = window.innerWidth > 768;
     };
     this.ID = document.cookie.replace(/(?:(?:^|.*;\s*)cid\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "";
-    if (this.ID !== "") {
+    if (this.ID !== "" && this.ID !== null && this.ID) {
       console.log(this.ID);
       this.signed = true;
     }
