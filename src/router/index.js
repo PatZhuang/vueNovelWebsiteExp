@@ -13,6 +13,11 @@ export default new Router({
       component: index
     },
     {
+      path: '/category',
+      name: 'category',
+      component: index
+    },
+    {
       path: '/favorite',
       name: 'favorite',
       component: favorite

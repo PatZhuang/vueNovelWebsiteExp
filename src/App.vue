@@ -82,7 +82,7 @@
         </p>
         <div>
           <el-form ref="form" v-model="form">
-          <el-input placehoder="请输入用户名" class="modal-login" v-model="form.id">
+          <el-input placehoder="请输入用户名" class="modal-login" v-model="form.id" :autofocus="true">
             <template slot="prepend">用户名：</template>
           </el-input>
           <el-input placehoder="请输入密码" type="password" class="modal-login" v-model="form.password">
@@ -91,7 +91,7 @@
           </el-form>
         </div>
         <div slot="footer">
-            <Button type="success" size="large" long @click="submit">登录</Button>
+            <Button type="success" size="large" long @click="login">登录</Button>
         </div>
     </Modal>
     <!--Logo、搜索框一行-->
@@ -116,10 +116,10 @@
         </el-button>
       </Col>
     </Row>
-    <el-menu mode="horizontal" default-active="1" id="mainNav" @select="active_menu_item($event)" router="router">
+    <el-menu mode="horizontal" :default-active="this.$route.path" id="mainNav" router>
       <el-menu-item
-        :index="index.toString()"
-        :class="['mainNav-item', {'mainNav-item-actived': activedMenuItem[index]}]"
+        :index="item.path"
+        :class="['mainNav-item', {'mainNav-item-actived': active_menu_item(item.path)}]"
         v-for="(item, index) in nav"
         :route="{path: item.path}"
         v-show="show_menu_item(index)"
@@ -153,7 +153,7 @@ export default {
         },
         {
           name: '分类浏览',
-          path: '#',
+          path: '/category',
           icon: 'el-icon-menu',
         },
         {
@@ -163,9 +163,7 @@ export default {
         }
       ],
       searchInput: '',
-
       loginModal: false,
-
       signed: false,
       ID: "",
       form: {
@@ -178,18 +176,13 @@ export default {
   methods: {
     show_nothing: function () {
       this.$message({
-        message: '啥都没有',
+        message: 'Nothing',
         type: 'success'
       });
     },
-    active_menu_item: function (itemIndex) {
-      for (var item in this.activedMenuItem) {
-        if (itemIndex === item) {
-          this.activedMenuItem[item] = true;
-        } else {
-          this.activedMenuItem[item] = false;
-        }
-      }
+    active_menu_item: function (path) {
+      console.log(this.$route.path);
+      return path === this.$route.path;
     },
     show_menu_item: function (index) {
       switch (index) {
@@ -202,7 +195,7 @@ export default {
           return false;
       }
     },
-    submit: function () {
+    login: function () {
       var that = this;
       this.$http.post('/api/login', {
         id: this.form.id,
@@ -219,6 +212,10 @@ export default {
           id: '',
           password: ''
         };
+        that.$message({
+          message: '登录成功！',
+          type: 'success'
+        }); 
       })
       .catch(function (error) {
         console.log(error);
