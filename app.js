@@ -66,7 +66,6 @@ router.post('/login', async (ctx, next) => {
 });
 
 app.use(router.routes());
-app.use(server(path.resolve('./dist')));
 // 在端口3000监听:
 app.listen(3000);
 console.log('app started at port 3000...');
