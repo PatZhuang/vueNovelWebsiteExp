@@ -21,11 +21,11 @@ router.get('/hello/:name', async(ctx, next) => {
 });
 
 router.get('/', async(ctx, next) => {
-    ctx.response.redirect('index.html');
+    // ctx.response.redirect('#');
 });
 
 
-router.get('/logout', async (ctx, next) => {
+router.get('/api/logout', async (ctx, next) => {
     var now = new Date();
     var time = now.getTime();
     time -= 60 * 1000;
@@ -44,7 +44,7 @@ router.get('/logout', async (ctx, next) => {
     }
 });
 
-router.post('/login', async (ctx, next) => {
+router.post('/api/login', async (ctx, next) => {
     var
         id = ctx.request.body.id || '',
         password = ctx.request.body.password || '';

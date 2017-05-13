@@ -182,7 +182,7 @@ export default {
     },
     submit: function () {
       var that = this;
-      this.$http.post('/login', {
+      this.$http.post('/api/login', {
         id: this.form.id,
         password: this.form.password
       })
@@ -205,7 +205,7 @@ export default {
     },
     logout: function () {
       var that = this;
-      this.$http.get('/logout')
+      this.$http.get('/api/logout')
       .then(function (response) {
         that.ID = "";
         that.signed = false;
