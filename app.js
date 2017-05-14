@@ -112,38 +112,10 @@ router.post('/api/favorite-books', async(ctx, next) => {
     ctx.status = 200;
     ctx.body = null;
   } else {
-    var getBooks = function (uid) {
-      return new Promise(function (resolve, reject) {
-        pool.getConnection(function (err, connection) {
-          if (err) {
-            reject({
-              status: 'connection failed'
-            })
-          } else {
-            // 获取收藏夹
-            connection.query({
-              sql: `SELECT * FROM book, favorite WHERE uid = '${uid}' and book.bid = favorite.bid`
-            }, function (err, rows, fields) {
-              connection.release();
-              if (err) {
-                // 查询错误
-                reject({
-                  status: 'query error'
-                })
-              } else {
-                resolve({
-                  status: 'success',
-                  books: rows
-                })
-              }
-            });
-          }
-        })
-      })
-    }
+    var queryString = `SELECT * FROM book, favorite WHERE uid = '${uid}' and book.bid = favorite.bid`;
 
     try {
-      ctx.body = await getBooks(uid);
+      ctx.body = await querySQL(queryString);
     } catch (e) {
       console.log(e);
       ctx.body = e;
@@ -156,51 +128,21 @@ router.post('/api/delete-favorite-books', async(ctx, next) => {
     booksToDel = ctx.request.body.booksToDel || [];
   console.log(booksToDel);
   var queryString = `DELETE FROM favorite WHERE uid = '${uid}' and (`;
-  for (var i = 0; i < booksToDel.length; i++) {
-    queryString = queryString + `bid = ${booksToDel[i]}`
-    if (i != booksToDel.length - 1) {
-      queryString = queryString + ' or ';
-    } else {
-      queryString = queryString + ')';
-    }
-  }
-  console.log(queryString);
-  if (uid == '') {
+  if (uid == '' || booksToDel.size == 0) {
     ctx.status = 200;
     ctx.body = null;
   } else {
-    var delBooks = function (uid) {
-      return new Promise(function (resolve, reject) {
-        pool.getConnection(function (err, connection) {
-          if (err) {
-            reject({
-              status: 'connection failed'
-            })
-          } else {
-            // 获取收藏夹
-            connection.query({
-              sql: queryString
-            }, function (err, rows, fields) {
-              connection.release();
-              if (err) {
-                // 查询错误
-                reject({
-                  status: 'query error'
-                })
-              } else {
-                resolve({
-                  status: 'success',
-                  books: rows
-                })
-              }
-            });
-          }
-        })
-      })
+      for (var i = 0; i < booksToDel.length; i++) {
+      queryString = queryString + `bid = ${booksToDel[i]}`
+      if (i != booksToDel.length - 1) {
+        queryString = queryString + ' or ';
+      } else {
+        queryString = queryString + ')';
+      }
     }
 
     try {
-      ctx.body = await delBooks(uid);
+      ctx.body = await querySQL(queryString);
     } catch (e) {
       console.log(e);
       ctx.body = e;
@@ -209,39 +151,11 @@ router.post('/api/delete-favorite-books', async(ctx, next) => {
 });
 
 router.get('/api/get-all-books', async(ctx, next) => {
-  var getBooks = function () {
-    return new Promise(function (resolve, reject) {
-      pool.getConnection(function (err, connection) {
-        if (err) {
-          reject({
-            status: 'connection failed'
-          })
-        } else {
-          // 获取收藏夹
-          connection.query({
-            sql: `SELECT * FROM book`
-          }, function (err, rows, fields) {
-            connection.release();
-            if (err) {
-              // 查询错误
-              reject({
-                status: 'query error'
-              })
-            } else {
-              resolve({
-                status: 'success',
-                books: rows
-              })
-            }
-          });
-        }
-      })
-    })
-  }
+  var queryString = 'SELECT * FROM book';
 
   try {
     ctx.status = 200;
-    ctx.body = await getBooks();
+    ctx.body = await querySQL(queryString);
   } catch (e) {
     console.log(e);
     ctx.body = e;
@@ -255,8 +169,19 @@ router.post('/api/add-favorite-books', async(ctx, next) => {
     ctx.status = 200;
     ctx.body = null;
   } else {
-    var getBooks = function (uid) {
-      return new Promise(function (resolve, reject) {
+    var queryString = `INSERT INTO favorite (uid, bid) VALUES ('${uid}', ${bid})`;
+
+    try {
+      ctx.body = await querySQL(queryString);
+    } catch (e) {
+      console.log(e);
+      ctx.body = e;
+    }
+  }
+});
+
+function querySQL(queryString) {
+  return new Promise(function (resolve, reject) {
         pool.getConnection(function (err, connection) {
           if (err) {
             reject({
@@ -264,7 +189,6 @@ router.post('/api/add-favorite-books', async(ctx, next) => {
             })
           } else {
             // 获取收藏夹
-            var queryString = `INSERT INTO favorite (uid, bid) VALUES ('${uid}', ${bid})`;
             console.log(queryString);
             connection.query({
               sql: queryString
@@ -285,16 +209,7 @@ router.post('/api/add-favorite-books', async(ctx, next) => {
           }
         })
       })
-    }
-
-    try {
-      ctx.body = await getBooks(uid);
-    } catch (e) {
-      console.log(e);
-      ctx.body = e;
-    }
-  }
-});
+}
 app.use(router.routes());
 // 在端口3000监听:
 app.listen(3000);
