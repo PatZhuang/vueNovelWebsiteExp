@@ -153,7 +153,18 @@ router.post('/api/favorite-books', async(ctx, next) => {
 
 router.post('/api/delete-favorite-books', async(ctx, next) => {
   var uid = ctx.request.body.id || '',
-      bookToDel = ctx.request.body.bookToDel.map(book => book.ISBN) || [];
+      booksToDel = ctx.request.body.booksToDel || [];
+  console.log(booksToDel);
+  var queryString = `DELETE FROM favorite WHERE uid = '${uid}' and (`;
+  for (var i = 0; i < booksToDel.length; i++) {
+    queryString = queryString + `bid = ${booksToDel[i]}`
+    if (i != booksToDel.length-1) {
+      queryString = queryString + ' or ';
+    } else {
+      queryString = queryString + ')';
+    }
+  }
+  console.log(queryString);
   if (uid == '') {
     ctx.status = 200;
     ctx.body = null;
@@ -168,7 +179,7 @@ router.post('/api/delete-favorite-books', async(ctx, next) => {
           } else {
             // 获取收藏夹
             connection.query({
-              sql: `SELECT * FROM book, favorite WHERE uid = '${uid}' and book.bid = favorite.bid`
+              sql: queryString
             }, function (err, rows, fields) {
               connection.release();
               if (err) {

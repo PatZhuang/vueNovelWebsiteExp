@@ -9,6 +9,7 @@
                          stripe border fit
                          align="center"
                          :default-sort="{prop: 'date', order: 'descending'}"
+                         :height="tableHeight"
                          :max-height="tableHeight"
                          @selection-change="handleSelectionChange"
                         >
@@ -98,7 +99,7 @@
                 searchInput: '',
                 searchSelect: '书名',
                 selectedBook: [],
-                tableHeight: window.screen.availHeight - 392,
+                tableHeight: window.screen.availHeight - 418,
                 tableRawData: [],
                 newBookDialogVisible: false,
                 ID: ''
@@ -149,7 +150,10 @@
                 }).then(() => {
                     var that = this;
                     this.$http.post('/api/delete-favorite-books', {
-                        selectedItem: that.selectedBook
+                        id: that.ID,
+                        booksToDel: that.selectedBook.map(function (item) {
+                            return item.bid;
+                        })
                     })
                     .then(function (response) {
                         that.$message({
