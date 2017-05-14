@@ -123,6 +123,7 @@
         v-for="(item, index) in nav"
         :route="{path: item.path}"
         v-show="show_menu_item(index)"
+        :key="item.path"
       >
       <i :class="item.icon"></i>
       {{item.name}}
@@ -181,7 +182,6 @@ export default {
       });
     },
     active_menu_item: function (path) {
-      console.log(this.$route.path);
       return path === this.$route.path;
     },
     show_menu_item: function (index) {
@@ -202,20 +202,25 @@ export default {
         password: this.form.password
       })
       .then(function (response) {
-        console.log(response);
-        console.log(response.data.id);
-        that.ID = response.data.id;
-        that.signed = true;
-        console.log(that.ID);
-        console.log(that.signed);
-        that.form = {
-          id: '',
-          password: ''
-        };
-        that.$message({
-          message: '登录成功！',
-          type: 'success'
-        }); 
+        if (response.data.id) {
+          that.ID = response.data.id;
+          that.signed = true;
+          that.form = {
+            id: '',
+            password: ''
+          };
+          that.$message({
+            message: '登录成功！',
+            type: 'success'
+          }); 
+        } else {
+          that.form.password = '';
+          that.$message({
+            message: '登录失败！',
+            type: 'warning'
+          });
+        }
+        
       })
       .catch(function (error) {
         console.log(error);
@@ -231,7 +236,8 @@ export default {
         that.$message({
           message: '已退出登录。',
           type: 'success'
-        });  
+        });
+        that.$router.push('/');
       })
       .catch(function (error) {
         console.log(error);
@@ -243,9 +249,8 @@ export default {
     window.onresize = function () {
       that.notXsDevice = window.innerWidth > 768;
     };
-    this.ID = document.cookie.replace(/(?:(?:^|.*;\s*)cid\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "";
+    this.ID = document.cookie.replace(/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "";
     if (this.ID !== "" && this.ID !== null && this.ID) {
-      console.log(this.ID);
       this.signed = true;
     }
   }

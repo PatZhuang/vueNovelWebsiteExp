@@ -16,7 +16,7 @@
       <Col :sm="14" style="padding: 0px 10px">
         <Row>
           <el-carousel :interval="4000" type="card" height="131px">
-            <el-carousel-item v-for="item in 4">
+            <el-carousel-item v-for="item in 4" :key="1">
             </el-carousel-item>
           </el-carousel>
         </Row>

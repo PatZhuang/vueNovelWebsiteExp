@@ -1,7 +1,7 @@
 <template>
     <Row type="flex" justify="space-between">
         <Col span="1"></Col>
-        <Col span="5" v-for="ad in ads" >
+        <Col span="5" v-for="ad in ads" :key="1">
             <a :href="ad.href" style="display: block;">
                 <img :src=ad.img alt="" class="ad-img">
             </a>

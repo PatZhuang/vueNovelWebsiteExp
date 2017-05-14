@@ -1,7 +1,7 @@
 <template>
     <Card :bordered="true">
         <p slot="title">{{colTitle}}</p>
-        <p class="book-item" v-for="(bookItem, index) in item">
+        <p class="book-item" v-for="(bookItem, index) in item" :key="bookItem.bookTitle">
             <Row type="flex" justify="space-between">
                 <Col span="4">
                     <Tag 

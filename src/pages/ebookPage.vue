@@ -8,7 +8,7 @@
                     <span><a href="#/" class="link small-text" style="margin-left: 10px;">查看更多>></a></span>
                 </p>
                 <Row type="flex" justify="space-between">
-                    <Col span="4" v-for="ebook in ebooks.slice(0, 5)">
+                    <Col span="4" v-for="ebook in ebooks.slice(0, 5)" :key="ebook.title">
                         <Card :bordered="false" dis-hover>
                             <div style="text-align: left">
                                 <a href="#/"><img :src='ebook.cover' alt="" class="book-cover" style="width: 100%"></a>
@@ -19,7 +19,7 @@
                     </Col>
                 </Row>
                 <Row type="flex" justify="space-between">
-                    <Col span="4" v-for="ebook in ebooks.slice(5)">
+                    <Col span="4" v-for="ebook in ebooks.slice(5)" :key="ebook.title">
                         <Card :bordered="false" dis-hover>
                             <div style="text-align: left">
                                 <a href="#/"><img :src='ebook.cover' alt="" class="book-cover" style="width: 100%"></a>
