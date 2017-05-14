@@ -55,7 +55,7 @@
                     </el-table>
                     <el-row type="flex" justify="space-between" style="margin-top: 10px">
                         <el-col :span="4" style="text-align: left">
-                            <el-button type="danger" size="large" @click="handleDeleteBook">删除</el-button>
+                            <el-button type="danger" size="large" @click="handleDelFavorite">删除</el-button>
                             <el-button type="success" size="large" @click="newBookDialogVisible = true">新增</el-button>
                         </el-col>
 
@@ -142,7 +142,7 @@
             handleSelectionChange: function (selectedItems) {
                 this.selectedBook = selectedItems;
             },
-            handleDeleteBook: function () {
+            handleDelFavorite: function () {
                 this.$confirm('确认删除收藏吗？', '提示', {
                   confirmButtonText: '确定',
                   cancelButtonText: '取消',

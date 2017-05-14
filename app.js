@@ -153,12 +153,12 @@ router.post('/api/favorite-books', async(ctx, next) => {
 
 router.post('/api/delete-favorite-books', async(ctx, next) => {
   var uid = ctx.request.body.id || '',
-      booksToDel = ctx.request.body.booksToDel || [];
+    booksToDel = ctx.request.body.booksToDel || [];
   console.log(booksToDel);
   var queryString = `DELETE FROM favorite WHERE uid = '${uid}' and (`;
   for (var i = 0; i < booksToDel.length; i++) {
     queryString = queryString + `bid = ${booksToDel[i]}`
-    if (i != booksToDel.length-1) {
+    if (i != booksToDel.length - 1) {
       queryString = queryString + ' or ';
     } else {
       queryString = queryString + ')';
@@ -208,6 +208,93 @@ router.post('/api/delete-favorite-books', async(ctx, next) => {
   }
 });
 
+router.get('/api/get-all-books', async(ctx, next) => {
+  var getBooks = function () {
+    return new Promise(function (resolve, reject) {
+      pool.getConnection(function (err, connection) {
+        if (err) {
+          reject({
+            status: 'connection failed'
+          })
+        } else {
+          // 获取收藏夹
+          connection.query({
+            sql: `SELECT * FROM book`
+          }, function (err, rows, fields) {
+            connection.release();
+            if (err) {
+              // 查询错误
+              reject({
+                status: 'query error'
+              })
+            } else {
+              resolve({
+                status: 'success',
+                books: rows
+              })
+            }
+          });
+        }
+      })
+    })
+  }
+
+  try {
+    ctx.status = 200;
+    ctx.body = await getBooks();
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
+  }
+})
+
+router.post('/api/add-favorite-books', async(ctx, next) => {
+  var uid = ctx.request.body.id || '',
+      bid = ctx.request.body.bid || '';
+  if (uid == '' || bid == '') {
+    ctx.status = 200;
+    ctx.body = null;
+  } else {
+    var getBooks = function (uid) {
+      return new Promise(function (resolve, reject) {
+        pool.getConnection(function (err, connection) {
+          if (err) {
+            reject({
+              status: 'connection failed'
+            })
+          } else {
+            // 获取收藏夹
+            var queryString = `INSERT INTO favorite (uid, bid) VALUES ('${uid}', ${bid})`;
+            console.log(queryString);
+            connection.query({
+              sql: queryString
+            }, function (err, rows, fields) {
+              connection.release();
+              if (err) {
+                // 查询错误
+                reject({
+                  status: 'query error'
+                })
+              } else {
+                resolve({
+                  status: 'success',
+                  books: rows
+                })
+              }
+            });
+          }
+        })
+      })
+    }
+
+    try {
+      ctx.body = await getBooks(uid);
+    } catch (e) {
+      console.log(e);
+      ctx.body = e;
+    }
+  }
+});
 app.use(router.routes());
 // 在端口3000监听:
 app.listen(3000);

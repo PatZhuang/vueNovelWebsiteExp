@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import index from '../pages/index.vue'
-import favorite from '../pages/favorite.vue'
+import favorite from '../pages/favoritePage.vue'
+import allBooks from '../pages/allBooksPage.vue'
 
 Vue.use(Router)
 
@@ -15,7 +16,7 @@ export default new Router({
     {
       path: '/category',
       name: 'category',
-      component: index
+      component: allBooks
     },
     {
       path: '/favorite',
