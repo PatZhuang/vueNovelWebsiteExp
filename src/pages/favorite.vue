@@ -101,6 +101,7 @@
                 tableHeight: window.screen.availHeight - 392,
                 tableRawData: [],
                 newBookDialogVisible: false,
+                ID: ''
             }
         },
         computed: {
@@ -128,7 +129,6 @@
               }
           }
         },
-
         methods: {
             titleFormatter: function (row, column) {
                 return `<<${row.title}>>`;
@@ -142,28 +142,51 @@
                 this.selectedBook = selectedItems;
             },
             handleDeleteBook: function () {
-                var newData = this.tableRawData;
-                var selectedItem = this.selectedBook;
-                this.tableRawData = newData.filter(function (item) {
-                    return selectedItem.indexOf(item) == -1;
+                this.$confirm('确认删除收藏吗？', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning'
+                }).then(() => {
+                    var that = this;
+                    this.$http.post('/api/delete-favorite-books', {
+                        selectedItem: that.selectedBook
+                    })
+                    .then(function (response) {
+                        that.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                        that.updateTableRawData();
+                    })
+                    .catch(function (error) {
+                        that.$message.error('删除失败\n' + error,)
+                    });
+                }).catch(() => {
+                  this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                  });
+                });                
+            },
+            updateTableRawData() {
+                var that = this;
+                this.$http.post('/api/favorite-books', {
+                    id: that.ID
                 })
+                .then(function (response) {
+                    that.tableRawData = response.data.books.map(function (item) {
+                        item.date = item.date.slice(0, 10);
+                        return item;
+                    });
+                })  
+                .catch(function (error) {
+                    console.log(error);
+                });
             }
         },
         mounted: function () {
-            var that = this;
-            var id = document.cookie.replace(/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "";
-            this.$http.post('/api/favorite-books', {
-                id: id
-            })
-            .then(function (response) {
-                that.tableRawData = response.data.books.map(function (item) {
-                    item.date = item.date.slice(0, 10);
-                    return item;
-                });
-            })  
-            .catch(function (error) {
-                console.log(error);
-            });
+            this.ID = document.cookie.replace(/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "";
+            this.updateTableRawData();
         }
     }
 </script>

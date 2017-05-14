@@ -151,6 +151,52 @@ router.post('/api/favorite-books', async(ctx, next) => {
   }
 });
 
+router.post('/api/delete-favorite-books', async(ctx, next) => {
+  var uid = ctx.request.body.id || '',
+      bookToDel = ctx.request.body.bookToDel.map(book => book.ISBN) || [];
+  if (uid == '') {
+    ctx.status = 200;
+    ctx.body = null;
+  } else {
+    var delBooks = function (uid) {
+      return new Promise(function (resolve, reject) {
+        pool.getConnection(function (err, connection) {
+          if (err) {
+            reject({
+              status: 'connection failed'
+            })
+          } else {
+            // 获取收藏夹
+            connection.query({
+              sql: `SELECT * FROM book, favorite WHERE uid = '${uid}' and book.bid = favorite.bid`
+            }, function (err, rows, fields) {
+              connection.release();
+              if (err) {
+                // 查询错误
+                reject({
+                  status: 'query error'
+                })
+              } else {
+                resolve({
+                  status: 'success',
+                  books: rows
+                })
+              }
+            });
+          }
+        })
+      })
+    }
+
+    try {
+      ctx.body = await delBooks(uid);
+    } catch (e) {
+      console.log(e);
+      ctx.body = e;
+    }
+  }
+});
+
 app.use(router.routes());
 // 在端口3000监听:
 app.listen(3000);
