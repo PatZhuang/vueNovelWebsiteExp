@@ -56,7 +56,6 @@
                     <el-row type="flex" justify="space-between" style="margin-top: 10px">
                         <el-col :span="4" style="text-align: left">
                             <el-button type="danger" size="large" @click="handleDelFavorite">删除</el-button>
-                            <el-button type="success" size="large" @click="newBookDialogVisible = true">新增</el-button>
                         </el-col>
 
                         <el-dialog
