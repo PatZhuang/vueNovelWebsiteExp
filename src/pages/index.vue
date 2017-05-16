@@ -1,8 +1,8 @@
 <template>
   <div>
-    <Row type="flex" justify="center">
-      <Col :sm="1"></Col>
-      <Col :sm="{span: 4}">
+    <el-row type="flex" justify="center">
+      <el-col :sm="1"></el-col>
+      <el-col :sm="{span: 4}">
         <a href="#/" class="navItem navItem-odd">文学</a>
         <a href="#/" class="navItem navItem-odd">流行</a>
         <div></div>
@@ -23,75 +23,58 @@
         <div></div>
         <a href="#/" class="navItem navItem-odd">农学</a>
         <a href="#/" class="navItem navItem-odd">医学</a>
-      </Col>
-      <Col :sm="19">
-        <Col :sm="17" id="row-1-col-2">
-          <Carousel v-model="carouselIndex" :autoplay="CarouselSetting.autoplay" :autoplay-speed="CarouselSetting.autoplaySpeed" :dots="CarouselSetting.dots"
-            :trigger="CarouselSetting.trigger" :arrow="CarouselSetting.arrow" class="main-carousel">
-            <Carousel-item>
-              <img src="../assets/img1.jpeg" alt="img1" class="carousel-img">
-            </Carousel-item>
-            <Carousel-item>
-              <img src="../assets/img2.jpeg" alt="img2" class="carousel-img">
-            </Carousel-item>
-            <Carousel-item>
-              <img src="../assets/img3.jpeg" alt="img3" class="carousel-img">
-            </Carousel-item>
-            <Carousel-item>
-              <img src="../assets/img4.jpeg" alt="img4" class="carousel-img">
-            </Carousel-item>
-          </Carousel>
-        </Col>
-        <Col :sm="{span: 6}">
-          <Card id="notice-card">
-            <p slot="title">一段文字</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab ipsum amet atque quasi perspiciatis, vel, nihil, adipisci
+      </el-col>
+      <el-col :sm="19">
+        <el-col :sm="17" id="row-1-col-2">
+          <el-carousel 
+            :initial-index="CarouselSetting.initialIndex" 
+            :indicator-position="CarouselSetting.indicatorPosition"
+            :autoplay="CarouselSetting.autoplay" 
+            :interval="CarouselSetting.interval"
+            :trigger="CarouselSetting.trigger" 
+            :arrow="CarouselSetting.arrow" 
+            height="260px"
+            >
+            <el-carousel-item v-for="item in 4" :key="item">
+              <img :src="require(`../assets/img${item}.jpeg`)" :alt=item class="carousel-img">
+            </el-carousel-item>
+          </el-carousel>
+        </el-col>
+        <el-col :sm="{span: 6}">
+          <el-card id="notice-card" header="一段文字" 
+          :body-style="{padding: '0 15px', lineHeight: '1.3em'}">
+            <p style="font-size: 14px;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab ipsum amet atque quasi perspiciatis, vel, nihil, adipisci
               quaerat modi veritatis similique sunt iure, praesentium aut ad ipsa deserunt distinctio harum! </p>
-          </Card>
-        <Col :sm="1"></Col>
-        </Col>
+          </el-card>
+        <el-col :sm="1"></el-col>
+        </el-col>
         <div>
-            <Card class="adcards">
+            <el-card 
+              class="adcards ad-img" 
+              v-for="n in 3" :key="null"
+              >
             <div>
               <img src="../assets/logo.png">
-              <h3>广告位</h3>
+              <p style="margin: 0; font-size: 16px; font-weight: 600">广告位</p>
             </div>
-            </Card>
-            <Card class="adcards">
-              <div>
-                <img src="../assets/logo.png">
-                <h3>又一个广告位</h3>
-              </div>
-            </Card>
-            <Card class="adcards">
-              <div>
-                <img src="../assets/logo.png">
-                <h3>还是广告位</h3>
-              </div>
-            </Card>
+            </el-card>
         </div>
-      </Col>
-    </Row>
+      </el-col>
+    </el-row>
     <br>
     <!--推荐栏-->
     <recommend></recommend>
-    <br>
-    <br>
     <!--广告行1-->
     <ad-row :ads="ad1"></ad-row>
     <br>
-    <br>
+
     <!--榜单栏-->
     <trending></trending>
     <br>
-    <br>
     <!--广告行2-->
     <ad-row :ads="ad2"></ad-row>
-    <br>
     <!--电子书栏-->
     <ebook></ebook>
-    <br>
-    <Back-top></Back-top>
   </div>
 </template>
 
@@ -112,11 +95,10 @@
       return {
         name: 'index',
         theme: 'light',
-        carouselIndex: 0,
         CarouselSetting: {
+          initialIndex: 0,
           autoplay: true,
-          autoplaySpeed: 2000,
-          dots: 'inside',
+          interval: 2000,
           trigger: 'click',
           arrow: 'hover',
         },
@@ -208,12 +190,14 @@
     float: left;
     height: 150px;
     width: 30%;
-    margin: 5px 0px 0px 20px;
+    margin: 10px 0px 0px 20px;
     background-color: #ecf0f1;
+    border: none;
+    box-shadow: none;
+    border-radius: 5px !important;
   }
 
   .adcards img {
     height: 80px;
   }
-
 </style>

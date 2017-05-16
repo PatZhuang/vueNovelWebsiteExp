@@ -1,10 +1,10 @@
 <template>
-    <Card :bordered="true">
-        <p slot="title">{{colTitle}}</p>
+    <el-card :body-style="cardBodyStyle">
+        <p slot="header" class="el-card-header" style="display:inline;">{{colTitle}}</p>
         <p class="book-item" v-for="(bookItem, index) in item" :key="bookItem.bookTitle">
-            <Row type="flex" justify="space-between">
-                <Col span="4">
-                    <Tag 
+            <el-row type="flex" justify="space-between" align="middle">
+                <el-col :span="3">
+                    <el-tag 
                     :class="['book-item-tag', 
                     {'first-book-item-tag': index===0},
                     {'second-book-item-tag': index===1},
@@ -12,10 +12,11 @@
                     ]"
                     >
                         {{index + 1}}
-                    </Tag>
-                </Col>    
-                <Col span="12" style="text-align: left"><a href="#/" class="">{{bookItem.bookTitle}}</a></Col>
-                <Col span="6" style="text-align: left">
+                    </el-tag>
+                </el-col>    
+                <el-col :span="12" style="text-align: left">
+                    <a href="#/" class="">{{bookItem.bookTitle}}</a></el-col>
+                <el-col :span="6" style="text-align: left">
                 <el-rate
                     :value="bookItem.rate/2"
                     disabled
@@ -24,17 +25,24 @@
                     style="position: relative; bottom: 1px"
                     >
                 </el-rate>
-                </Col>
-                <Col span="2">
+                </el-col>
+                <el-col :span="2">
                     <p class="book-item-rate-text">{{bookItem.rate}}</p>
-                </Col>
-            </Row>
+                </el-col>
+            </el-row>
         </p>
-    </Card>
+    </el-card>
 </template>
 
 <script>
     export default {
+        data() {
+            return {
+                cardBodyStyle: {
+                    padding: '10px'
+                }
+            }
+        },
         props: {
             colTitle: {
                 default: '榜单'
@@ -58,7 +66,7 @@
     }
 </script>
 
-<style>
+<style scoped>
     .book-item {
       margin: 15px 0;
     }
@@ -78,11 +86,14 @@
         background-color: white;
         padding-left: 7px;
         padding-right: 7px;
+        border: 1px solid #E8E8E8;
+        color: black;
     }
 
     .book-item-rate-text {
         color: #ff9900;
         font-weight: 500;
+        font-size: 14px;
     }
 
     .book-item .first-book-item-tag {
@@ -101,5 +112,30 @@
         color: white;
         background-color: #F7BA2A;
         font-weight: bold;
+    }
+
+    .el-card-header {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    a {
+        font-size: 14px;
+    }
+
+    .el-row {
+        height: 25px;
+    }
+
+    .el-card {
+        border: 1px solid #E8E8E8;
+        box-shadow: none;
+        -webkit-transition: box-shadow .3s;
+        -moz-transition: box-shadow .3s;
+        transition: box-shadow .3s;
+    }
+
+    .el-card:hover {
+        box-shadow: 0px 0px 8px lightgray;
     }
 </style>

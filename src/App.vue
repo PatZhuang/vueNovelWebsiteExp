@@ -13,22 +13,16 @@
   margin: auto;
 }
 
-.layout-header {
-  height: 60px;
-  background: #fff;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
-  display: flex;
-}
-
 .layout-copy {
   text-align: center;
   padding: 10px 0 20px;
   color: #9ea7b4;
+  font-size: 12px;
 }
 
 .layout-ceiling {
   background: rgb(247, 247, 247);
-  padding: 10px 0;
+  padding: 8px 0;
   overflow: hidden;
 }
 
@@ -63,12 +57,12 @@
     <div class="layout-ceiling">
       <div class="layout-ceiling-right">
         <div v-show="!signed">
-          <el-button type="text" class="layout-ceiling-btns" @click="loginModal = true">登录</el-button>
+          <el-button type="text" class="layout-ceiling-btns" @click="loginDialog = true">登录</el-button>
           <span class="separator">|</span>
           <el-button type="text" class="layout-ceiling-btns" style="color: #aaa">注册</el-button>
         </div>
         <div v-show="signed">
-          <span>Hello, </span>
+          <span style="font-size: 14px;">Hello, </span>
           <el-button class="layout-ceiling-btns">{{ ID }}</el-button>
           <el-button type="text" class="layout-ceiling-btns" @click="logout" style="color: #aaa">退出登录</el-button>
         </div>
@@ -76,46 +70,43 @@
     </div>
   
     <!--登录框-->
-    <Modal v-model="loginModal" width="450">
-        <p slot="header" style="color:#27ae60;text-align:center">
-          账号登录
-        </p>
-        <div>
-          <el-form ref="form" v-model="form">
-          <el-input placehoder="请输入用户名" class="modal-login" v-model="form.id" :autofocus="true">
-            <template slot="prepend">用户名：</template>
-          </el-input>
-          <el-input placehoder="请输入密码" type="password" class="modal-login" v-model="form.password">
-            <template slot="prepend">密码： &nbsp;&nbsp;&nbsp;</template>
-          </el-input>
+    <el-dialog 
+      :visible.sync="loginDialog" 
+      size="tiny"
+    >
+      <div slot="title" style="color: #27ae60; font-size: 16px; display: inline-block">账号登录</div>
+          <el-form ref="form" :model="form" style="margin-top: -20px">
+            <el-input placehoder="请输入用户名" class="modal-login" v-model="form.id" :autofocus="true">
+              <template slot="prepend">用户名：</template>
+            </el-input>
+            <el-input placehoder="请输入密码" type="password" class="modal-login" v-model="form.password">
+              <template slot="prepend">密码： &nbsp;&nbsp;&nbsp;</template>
+            </el-input>
           </el-form>
-        </div>
-        <div slot="footer">
-            <Button type="success" size="large" long @click="login">登录</Button>
-        </div>
-    </Modal>
+            <el-button type="success" size="large" style="width: 95%; margin-top: 10px;" @click="login">登录</el-button>
+    </el-dialog>
+
     <!--Logo、搜索框一行-->
-    <Row type="flex" justify="center" align="middle" class="row">
-      <Col :xs="2" :sm="{span: 1, offset: 1}" class="Col-logo">
+    <el-row type="flex" justify="space-between" align="middle" class="row" style="height: 53px">
+      <el-col :xs="2" :sm="{span: 1, offset: 1}" class="el-col-logo">
         <img src="../src/assets/logo.png" alt="logo" id='logo' class="layout-logo">
-      </Col>
-      <Col :xs="0" :sm="2">
-        <h1>VueTest</h1>
-      </Col>
-      <Col :xs="{span: 14, offset: 2}" :sm="12">
+        <h1 style="font-size: 24px; margin-left: 10px;">VueTest</h1>
+      </el-col>
+      <el-col :xs="{span: 14, offset: 2}" :sm="{span: 12, offset: 2}">
         <el-input
           v-model="searchInput"
           icon="search"
         >
-
         </el-input>
-      </Col>
-      <Col :xs="{span: 2, offset: 2}" :sm="4">
+      </el-col>
+      <el-col :xs="{span: 2, offset: 2}" :sm="4">
         <el-button icon="share" @click="show_nothing">
           一个按钮
         </el-button>
-      </Col>
-    </Row>
+      </el-col>
+    </el-row>
+
+    <!--导航栏-->
     <el-menu mode="horizontal" :default-active="this.$route.path" id="mainNav" router>
       <el-menu-item
         :index="item.path"
@@ -131,6 +122,7 @@
     </el-menu>
     <router-view></router-view>
     <hr>
+    <!--页脚-->
     <div class="layout-copy">
       2017-2018 &copy; Patrick
     </div>    
@@ -164,7 +156,7 @@ export default {
         }
       ],
       searchInput: '',
-      loginModal: false,
+      loginDialog: false,
       signed: false,
       ID: "",
       form: {
@@ -225,7 +217,7 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
-      this.loginModal = false;
+      this.loginDialog = false;
     },
     logout: function () {
       var that = this;
@@ -267,7 +259,7 @@ export default {
   width: 100%;
 }
 
-.Col-logo {
+.el-col-logo {
   display: flex; 
   align-items: center;
 }
@@ -311,4 +303,18 @@ hr {
   margin: 10px; 
   width: auto;
 }
+</style>
+
+<style>
+  a {
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #27ae60;
+  }
+
+  body {
+    margin: 0;
+  }
 </style>

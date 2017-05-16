@@ -1,38 +1,40 @@
 <template>
-    <Row type="flex" justify="space-between">
-        <Col span="1"></Col>
-        <Col span="22">
-            <Card :bordered="false" dis-hover>
-                <p slot="title" id="ebook-card-title">
+    <el-row type="flex" justify="space-between">
+        <el-col :span="1"></el-col>
+        <el-col :span="22">
+            <el-card>
+                <p slot="header" id="ebook-card-title" style="margin: 0; margin-left: 20px; font-weight: 600;">
                     电子图书
-                    <span><a href="#/" class="link small-text" style="margin-left: 10px;">查看更多>></a></span>
+                    <span>
+                        <a href="#/" class="link small-text" style="margin-left: 0px; display: inline">查看更多>></a>
+                    </span>
                 </p>
-                <Row type="flex" justify="space-between">
-                    <Col span="4" v-for="ebook in ebooks.slice(0, 5)" :key="ebook.title">
-                        <Card :bordered="false" dis-hover>
+                <el-row type="flex" justify="space-between">
+                    <el-col :span="4" v-for="ebook in ebooks.slice(0, 5)" :key="ebook.title">
+                        <el-card :body-style="cardBodyStyle">
+                            <div style="text-align: left;">
+                                <a href="#/"><img :src='ebook.cover' alt="" class="book-cover" style="width: 100%"></a>
+                                <a href="#/" class="link small-text">{{ebook.title}}</a>
+                                <p class="small-text">￥{{ebook.price}}</p>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row type="flex" justify="space-between">
+                    <el-col :span="4" v-for="ebook in ebooks.slice(5)" :key="ebook.title">
+                        <el-card :body-style="cardBodyStyle">
                             <div style="text-align: left">
                                 <a href="#/"><img :src='ebook.cover' alt="" class="book-cover" style="width: 100%"></a>
                                 <a href="#/" class="link small-text">{{ebook.title}}</a>
                                 <p class="small-text">￥{{ebook.price}}</p>
                             </div>
-                        </Card>
-                    </Col>
-                </Row>
-                <Row type="flex" justify="space-between">
-                    <Col span="4" v-for="ebook in ebooks.slice(5)" :key="ebook.title">
-                        <Card :bordered="false" dis-hover>
-                            <div style="text-align: left">
-                                <a href="#/"><img :src='ebook.cover' alt="" class="book-cover" style="width: 100%"></a>
-                                <a href="#/" class="link small-text">{{ebook.title}}</a>
-                                <p class="small-text">￥{{ebook.price}}</p>
-                            </div>
-                        </Card>
-                    </Col>
-                </Row>
-            </Card>
-        </Col>
-        <Col span="1"></Col>
-    </Row>
+                        </el-card>
+                    </el-col>
+                </el-row>
+            </el-card>
+        </el-col>
+        <el-col :span="1"></el-col>
+    </el-row>
 </template>
 
 <script>
@@ -91,15 +93,17 @@
                         price: '12.99',
                         cover: require('../assets/ebook/ebook10.jpeg')
                     },
-                ]
+                ],
+                cardBodyStyle: {
+                    padding: '15px'
+                }
             }
         }
     }
 </script>
 
-<style>
+<style scoped>
     #ebook-card-title {
-      align-items: baseline;
       text-align: left;
       font-size: 20px;
       margin-left: 30px;
@@ -124,6 +128,7 @@
     .small-text {
       font-size: 13px;
       font-weight: normal;
+      margin: 0;
     }
 
     .book-cover {
@@ -131,12 +136,16 @@
     }
 
     .book-cover:hover {
-        box-shadow: 4px 4px 4px #b3b3b3;
+        box-shadow: 4px 4px 4px lightgray;
     }
 
     .book-cover {
         -webkit-transition: box-shadow .2s;
         -moz-transition: box-shadow .2s;
         transition: box-shadow .2s;
+    }
+    .el-card {
+        border: none;
+        box-shadow: none;
     }
 </style>

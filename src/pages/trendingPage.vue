@@ -1,12 +1,12 @@
 <template>
-    <Row type="flex" justify="space-around" style="margin: 0 32px">
-        <Col :sm="{span: 11}">
+    <el-row type="flex" justify="space-around" style="margin: 0 32px">
+        <el-col :sm="{span: 11}">
             <trending-col :colTitle="colTitleFirst" :item="colItemFirst"></trending-col>
-        </Col>
-        <Col :sm="{span: 11}">
+        </el-col>
+        <el-col :sm="{span: 11}">
             <trending-col :colTitle="colTitleSecond" :item="colItemSecond"></trending-col>
-        </Col>
-    </Row>
+        </el-col>
+    </el-row>
 </template>
 
 <script>

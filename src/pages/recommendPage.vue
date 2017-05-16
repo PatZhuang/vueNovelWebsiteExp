@@ -1,64 +1,62 @@
 <template>
   <div>
-    <Row type="flex" justify="center">
-      <Col :sm="1">
+    <el-row type="flex" justify="center">
+      <el-col :sm="1">
       <!--占位-->
-      </Col>
-      <Col :sm="4">
-        <Card :bordered="false" dis-hover :padding="0">
-          <p slot="title" style="margin-bottom: 3px">新书速递</p>
+      </el-col>
+      <el-col :sm="4">
+        <el-card :body-style="cardBodyStyle">
+          <p slot="header" class='card-header'>新书速递</p>
           <p v-for="book in newBooks" :key="book.title" class="book-bulletin-item">
             <span class="book-bulletin-title"><a href="#/">{{ book.title }}</a></span>
             <span class="book-bulletin-author"><a href="#/">{{ book.author }}</a></span>
           </p>
-        </Card>
-      </Col>
-      <Col :sm="14" style="padding: 0px 10px">
-        <Row>
+        </el-card>
+      </el-col>
+      <el-col :sm="14" style="padding: 0px 10px">
+        <el-row>
           <el-carousel :interval="4000" type="card" height="131px">
             <el-carousel-item v-for="item in 4" :key="1">
             </el-carousel-item>
           </el-carousel>
-        </Row>
-        <Row>
-          <Col :sm="8" v-for="book in bookStore1" :key="book.title">
-            <Card class="card-info" :padding="10" dis-hover :bordered="false">
+        </el-row>
+        <el-row>
+          <el-col :sm="8" v-for="book in bookStore1" :key="book.title">
+            <el-card class="card-info" :body-style="cardInfoBodyStyle">
               <div>
                 <a href="#/">{{book.title}}</a>
                 <p class='book-price'>￥{{book.price}}</p>
                 <p class="book-description">{{book.description}}</p> 
               </div>
-            </Card>
-          </Col>
-        </Row>
-        <br>
+            </el-card>
+          </el-col>
+        </el-row>
         <hr>
-        <br>
-        <Row>
-          <Col :sm="8" v-for="book in bookStore2" :key="book.title">
-            <Card class="card-info" :padding="10" dis-hover :bordered="false">
+        <el-row>
+          <el-col :sm="8" v-for="book in bookStore2" :key="book.title">
+            <el-card class="card-info" :body-style="cardInfoBodyStyle">
               <div>
                 <a href="#/">{{book.title}}</a>
                 <p class='book-price'>￥{{book.price}}</p>
                 <p class="book-description">{{book.description}}</p> 
               </div>
-            </Card>
-          </Col>
-        </Row>
-      </Col>
-      <Col :sm="4">
-        <Card :bordered="false" dis-hover :padding="0">
-          <p slot="title">最受关注图书</p>
+            </el-card>
+          </el-col>
+        </el-row>
+      </el-col>
+      <el-col :sm="4">
+        <el-card :body-style="cardBodyStyle">
+          <p slot="header" class='card-header'>最受关注图书</p>
           <p v-for="book in popBooks" :key="book.title" class="book-bulletin-item">
             <span class="book-bulletin-title"><a href="#/">{{ book.title }}</a></span>
             <span class="book-bulletin-author"><a href="#/">{{ book.author }}</a></span>
           </p>
-        </Card>
-      </Col>
-      <Col :sm="1">
+        </el-card>
+      </el-col>
+      <el-col :sm="1">
       <!--占位-->
-      </Col>
-    </Row>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -186,6 +184,14 @@
             description: '不可思议的友谊奇迹，人生路上柔软的智慧之光'
           },
         ],
+        cardBodyStyle: {
+          padding: "0px",
+        },
+        cardInfoBodyStyle: {
+          padding: '10px',
+          margin: '11px',
+          lineHeight: '1.62em'
+        }
       }
 
     }
@@ -194,16 +200,24 @@
 
 
 <style scoped>
+  .el-card {
+    border: none;
+    box-shadow: none;
+  }
+
+  .card-header {
+    font-size: 14px;
+    font-weight: bold;
+    display: inline;
+  }
+
   .book-bulletin-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0px 2px;
-    padding-top: 14px;
   }
   
   .book-bulletin-title {
-    /*display: inline-block;*/
     text-align: left;
     width: 60%;
     font-size: 14px;
@@ -242,9 +256,10 @@
     font-size: 13px;
     color: #666;
   }
-  .card-info {
+  
+  .card-info * {
     text-align: left;
-    line-height: 1.62em;
+    margin: 0;
   }
 
   .card-info a {
@@ -266,7 +281,7 @@
     border: none;
     height: 1px;
     background-color: #ccc;
-    margin: 0 1%;
+    margin: 0 2%;
     width: auto;
   }
 

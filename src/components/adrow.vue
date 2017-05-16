@@ -1,13 +1,13 @@
 <template>
-    <Row type="flex" justify="space-between">
-        <Col span="1"></Col>
-        <Col span="5" v-for="ad in ads" :key="1">
+    <el-row type="flex" justify="space-between">
+        <el-col :span="1"></el-col>
+        <el-col :span="5" v-for="ad in ads" :key="1">
             <a :href="ad.href" style="display: block;">
                 <img :src=ad.img alt="" class="ad-img">
             </a>
-        </Col>
-        <Col span="1"></Col>
-    </Row>
+        </el-col>
+        <el-col :span="1"></el-col>
+    </el-row>
 </template>
 
 <script>
@@ -33,7 +33,7 @@
     }
 
     .ad-img:hover {
-        box-shadow: 3px 3px 3px #b3b3b3;
+        box-shadow: 3px 3px 3px lightgray;
     }
 
     .ad-img {
