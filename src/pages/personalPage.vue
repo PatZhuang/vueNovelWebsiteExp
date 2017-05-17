@@ -4,11 +4,11 @@
             <el-tabs v-model="activeTab">
                 <el-tab-pane label="我的书架" name="wodeshujia">
                     <!--表格部分-->
-                    <favorite-table :tableRawData="favoriteTable">
+                    <favorite-table :tableRawData="favoriteTable" ref="favorite-table">
                     </favorite-table>
                 </el-tab-pane>
                 <el-tab-pane label="我的作品" name="wodezuopin">
-                    
+                    <my-works-table></my-works-table>
                 </el-tab-pane>
             </el-tabs>
         </el-col>
@@ -17,10 +17,12 @@
 
 <script>
     import favoriteTable from '../components/favoriteTable.vue'
+    import myWorksTable from '../components/myWorksTable.vue'
     export default {
         name: 'personalPage',
         components: {
-            'favorite-table': favoriteTable
+            'favorite-table': favoriteTable,
+            'my-works-table': myWorksTable,
         },
         data() {
             return {
@@ -52,9 +54,3 @@
         }
     }
 </script>
-
-<style>
-    .el-select {
-        width: 100px;
-    }
-</style>

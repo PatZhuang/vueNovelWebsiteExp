@@ -42,7 +42,7 @@
         searchInput: '',
         searchSelect: '书名',
         selectedBook: [],
-        tableHeight: window.screen.availHeight - 418,
+        tableHeight: window.screen.availHeight - 390,
         ID: ''
       }
     },
@@ -117,26 +117,13 @@
           });
         });
       },
-      updateTableRawData() {
-        var that = this;
-        this.$http.post('/api/favorite-books', {
-            id: that.ID
-          })
-          .then(function (response) {
-            that.tableRawData = response.data.books.map(function (item) {
-              item.date = item.date.slice(0, 10);
-              return item;
-            });
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
     },
-    mounted: function () {
-      this.ID = document.cookie.replace(/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "";
-      // this.updateTableRawData();
-    }
   }
 
 </script>
+
+<style scoped>
+    .el-select {
+        width: 100px;
+    }
+</style>
