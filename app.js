@@ -7,7 +7,7 @@ const path = require('path');
 // 创建一个Koa对象表示web app本身:
 const app = new Koa();
 
-const pool = require('./module/pool.js');
+const pool = require('./module/sqlpool.js');
 
 app.use(bodyParser());
 
