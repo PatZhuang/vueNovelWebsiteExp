@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import index from '../pages/index.vue'
-import favorite from '../pages/favoritePage.vue'
+import personal from '../pages/personalPage.vue'
 import allBooks from '../pages/allBooksPage.vue'
 
 Vue.use(Router)
@@ -19,9 +19,9 @@ export default new Router({
       component: allBooks
     },
     {
-      path: '/favorite',
-      name: 'favorite',
-      component: favorite
+      path: '/personal',
+      name: 'personal',
+      component: personal
     }
   ]
 })

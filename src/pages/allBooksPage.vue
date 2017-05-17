@@ -33,7 +33,7 @@
                             </template>
                         </el-table-column>
                         <el-table-column
-                            prop="tag"
+                            prop="category"
                             label="类别"
                             min-width="20"
                             align="center"
@@ -119,7 +119,7 @@
           catFilter: function () {
             var filter = [];
             for (var data of this.tableData) {
-                var cat = data.tag;
+                var cat = data.category;
                 if (filter.indexOf(cat) === -1) {
                     filter.push(cat);
                 }
@@ -145,7 +145,7 @@
                 return `<<${row.title}>>`;
             },
             cat_filter: function (value, row) {
-                return row.tag == value;
+                return row.category == value;
             },
             handleFavoriteSearch: function (tableRawData, searchInput) {
             },

@@ -150,8 +150,8 @@ export default {
           icon: 'el-icon-menu',
         },
         {
-          name: '我的收藏',
-          path: '/favorite',
+          name: '个人中心',
+          path: '/personal',
           icon: 'el-icon-star-off',
         }
       ],
