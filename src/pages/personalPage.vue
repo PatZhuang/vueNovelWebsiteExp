@@ -4,7 +4,10 @@
             <el-tabs v-model="activeTab">
                 <el-tab-pane label="我的书架" name="wodeshujia">
                     <!--表格部分-->
-                    <favorite-table :tableRawData="favoriteTable" ref="favorite-table">
+                    <favorite-table 
+                        :tableRawData="favoriteTable" 
+                        ref="favoriteTable"
+                        @tableRefreshRequest="refreshTableRawData()">
                     </favorite-table>
                 </el-tab-pane>
                 <el-tab-pane label="我的作品" name="wodezuopin">
@@ -46,6 +49,11 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            refreshTableRawData() {
+                this.updateTableRawData();
+                this.$refs.favoriteTable.tableRawData = this.favoriteTable;
+                console.log(this.favoriteTable);
             }
         },
         mounted: function () {

@@ -85,7 +85,9 @@
       },
       handleFavoriteSearch: function (tableRawData, searchInput) {},
       handleSelectionChange: function (selectedItems) {
-        this.selectedBook = selectedItems;
+        this.selectedBook = selectedItems.map(function (item) {
+                return item.bid;
+        });
       },
       handleDelFavorite: function () {
         this.$confirm('确认删除收藏吗？', '提示', {
@@ -96,16 +98,14 @@
           var that = this;
           this.$http.post('/api/delete-favorite-books', {
               id: that.ID,
-              booksToDel: that.selectedBook.map(function (item) {
-                return item.bid;
-              })
+              bids: that.selectedBook
             })
             .then(function (response) {
               that.$message({
                 message: '删除成功',
                 type: 'success'
               });
-              that.updateTableRawData();
+              that.$emit('tableRefreshRequest');
             })
             .catch(function (error) {
               that.$message.error('删除失败\n' + error, )
@@ -118,6 +118,9 @@
         });
       },
     },
+    mounted: function () {
+        this.ID = document.cookie.replace(/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "";
+    }
   }
 
 </script>

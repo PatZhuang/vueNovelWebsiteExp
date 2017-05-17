@@ -95,7 +95,7 @@ router.post('/api/login', async(ctx, next) => {
       uid, {
         domain: 'localhost', // 写cookie所在的域名
         path: '/', // 写cookie所在的路径
-        maxAge: 20 * 60 * 1000, // cookie有效时长
+        maxAge: 60 * 60 * 1000, // cookie有效时长
         httpOnly: false, // 是否只用于http请求中获取
         overwrite: false // 是否允许重写
       }
@@ -125,28 +125,23 @@ router.post('/api/favorite-books', async(ctx, next) => {
 
 router.post('/api/delete-favorite-books', async(ctx, next) => {
   var uid = ctx.request.body.id || '',
-    booksToDel = ctx.request.body.booksToDel || [];
-  console.log(booksToDel);
+    booksToDel = ctx.request.body.bids || [];
   var queryString = `DELETE FROM favorite WHERE uid = '${uid}' and (`;
-  if (uid == '' || booksToDel.size == 0) {
-    ctx.status = 200;
-    ctx.body = null;
-  } else {
-      for (var i = 0; i < booksToDel.length; i++) {
-      queryString = queryString + `bid = ${booksToDel[i]}`
-      if (i != booksToDel.length - 1) {
-        queryString = queryString + ' or ';
-      } else {
-        queryString = queryString + ')';
-      }
-    }
 
-    try {
-      ctx.body = await querySQL(queryString);
-    } catch (e) {
-      console.log(e);
-      ctx.body = e;
+  for (var i = 0; i < booksToDel.length; i++) {
+    queryString = queryString + `bid = ${booksToDel[i]}`
+    if (i != booksToDel.length - 1) {
+      queryString = queryString + ' or ';
+    } else {
+      queryString = queryString + ')';
     }
+  }
+
+  try {
+    ctx.body = await querySQL(queryString);
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
   }
 });
 
@@ -164,7 +159,7 @@ router.get('/api/get-all-books', async(ctx, next) => {
 
 router.post('/api/add-favorite-books', async(ctx, next) => {
   var uid = ctx.request.body.id || '',
-      bid = ctx.request.body.bid || '';
+    bid = ctx.request.body.bid || '';
   if (uid == '' || bid == '') {
     ctx.status = 200;
     ctx.body = null;
@@ -182,33 +177,34 @@ router.post('/api/add-favorite-books', async(ctx, next) => {
 
 function querySQL(queryString) {
   return new Promise(function (resolve, reject) {
-        pool.getConnection(function (err, connection) {
+    pool.getConnection(function (err, connection) {
+      if (err) {
+        reject({
+          status: 'connection failed'
+        })
+      } else {
+        // 获取收藏夹
+        console.log(queryString);
+        connection.query({
+          sql: queryString
+        }, function (err, rows, fields) {
+          connection.release();
           if (err) {
+            // 查询错误
+            console.log(err);
             reject({
-              status: 'connection failed'
+              status: 'query error'
             })
           } else {
-            // 获取收藏夹
-            console.log(queryString);
-            connection.query({
-              sql: queryString
-            }, function (err, rows, fields) {
-              connection.release();
-              if (err) {
-                // 查询错误
-                reject({
-                  status: 'query error'
-                })
-              } else {
-                resolve({
-                  status: 'success',
-                  books: rows
-                })
-              }
-            });
+            resolve({
+              status: 'success',
+              books: rows
+            })
           }
-        })
-      })
+        });
+      }
+    })
+  })
 }
 app.use(router.routes());
 // 在端口3000监听:
