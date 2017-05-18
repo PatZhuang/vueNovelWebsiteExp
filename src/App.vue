@@ -307,6 +307,7 @@
 <style>
   a {
     text-decoration: none;
+    color: #203d32;
   }
   
   a:hover {

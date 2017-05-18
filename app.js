@@ -238,6 +238,33 @@ router.post('/api/upload-new-chapter', async(ctx, next) => {
   }
 });
 
+router.post('/api/get-book-chapters', async(ctx, next) => {
+  var bookTitle = ctx.request.body.bookTitle || '';
+  var queryString = `SELECT chapterTitle FROM bookChapters JOIN book on bookChapters.bid WHERE book.title = '${bookTitle}' ORDER BY chapterIndex`;
+
+  try {
+    var response = await querySQL(queryString);
+    ctx.body = response;
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
+  }
+});
+
+router.post('/api/get-chapter', async(ctx, next) => {
+  var bookTitle = ctx.request.body.bookTitle || '',
+      chapterIndex = ctx.request.body.chapterIndex || 0;
+  var queryString = 'SELECT chapterTitle, content FROM bookChapters JOIN book ON book.bid WHERE book.title = '+
+                    `'${bookTitle}' and chapterIndex = ${chapterIndex}`;
+  try {
+    var response = await querySQL(queryString);
+    ctx.body = response;
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
+  }
+});
+
 function querySQL(queryString) {
   return new Promise(function (resolve, reject) {
     pool.getConnection(function (err, connection) {
@@ -253,11 +280,12 @@ function querySQL(queryString) {
           connection.release();
           if (err) {
             // 查询错误
-            console.log(err);
+            console.log('查询错误: ' + err);
             reject({
               status: 'query error'
             })
           } else {
+            // console.log('查询结果: ' + rows);
             resolve({
               status: 'success',
               rows: rows

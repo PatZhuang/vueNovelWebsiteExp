@@ -347,8 +347,4 @@
         margin-left: 20px;
         margin-right: 30px;
     }
-
-    a {
-        color: #203d32;
-    }
 </style>
