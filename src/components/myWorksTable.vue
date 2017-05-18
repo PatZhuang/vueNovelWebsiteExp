@@ -68,6 +68,22 @@
                 :filter-method="status_filter"
                 >
             </el-table-column>
+            <el-table-column
+                label="操作"
+                min-width="12"
+                align="center">
+                <!--操作列-->
+                <template scope="scope">
+                    <el-button type="text" size="small">上传章节</el-button>
+                    <el-button 
+                        type="text" 
+                        size="small" 
+                        style="color: #e74c3c"
+                        @click="deleteMyWork(scope.row)">
+                        删除作品
+                    </el-button>
+                </template>
+            </el-table-column>
         </el-table>
         <!--控制栏-->
         <el-row type="flex" justify="space-between" style="margin-top: 10px">
@@ -209,6 +225,7 @@
                       });
                       that.$emit('tableRefreshRequest');
                       that.newWorkDialogVisible = false;
+                      that.newWorkForm = {};
                     })
                     .catch(function (error) {
                       that.$message.error('添加作品失败\n' + error, )
@@ -217,16 +234,38 @@
               } else {
                 this.$message.error('请检查输入')
               }
+            },
+            deleteMyWork(row) {
+                this.$confirm('确认删除作品吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    var that = this;
+                    this.$http.post('/api/delete-my-work', {
+                        bid: row.bid
+                    })
+                    .then(function (response) {
+                        that.$message({
+                            message: '删除作品成功',
+                            type: 'success'
+                        })
+                        that.$emit('tableRefreshRequest');
+                    })
+                    .catch(function (error) {
+                        that.$message.error('删除作品失败');
+                    });
+                })
             }
         },
 
         mounted: function() {
             var that = this;
             this.ID = document.cookie.replace(/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "";
+            // 获取图书类别
             this.$http.get('/api/get-categories')
             .then(function (response) {
                 that.bookCategory = response.data.rows.map(x => x.category);
-                console.log(that.bookCategory);
             })
             .catch(function (e) {
                 console.log(e);
@@ -247,7 +286,7 @@
       width: 50%;
     }
 
-    .el-input {
+    .el-dialog .el-input {
         width: 70%;
     }
 

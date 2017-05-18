@@ -200,6 +200,18 @@ router.post('/api/post-new-work', async(ctx, next) => {
   } 
 });
 
+router.post('/api/delete-my-work', async(ctx, next) => {
+  var bid = ctx.request.body.bid;
+  var queryString = `DELETE FROM book WHERE book.bid = ${bid}`;
+
+  try {
+    ctx.body = await querySQL(queryString);
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
+  }
+});
+
 router.get('/api/get-categories', async(ctx, next) => {
   var queryString = 'SELECT * FROM category';
   try {
@@ -218,7 +230,6 @@ function querySQL(queryString) {
           status: 'connection failed'
         })
       } else {
-        // 获取收藏夹
         console.log(queryString);
         connection.query({
           sql: queryString

@@ -156,7 +156,7 @@
                 var that = this;
                 this.$http.get('/api/get-all-books')
                 .then(function (response) {
-                    that.tableRawData = response.data.books.map(function (item) {
+                    that.tableRawData = response.data.rows.map(function (item) {
                         item.date = item.date.slice(0, 10);
                         return item;
                     });
@@ -169,7 +169,7 @@
                     id: that.ID
                 })
                 .then(function (response) {
-                    that.favoriteBooks = response.data.books.map(function (item) {
+                    that.favoriteBooks = response.data.rows.map(function (item) {
                         return item.bid;
                     });
                 })  
