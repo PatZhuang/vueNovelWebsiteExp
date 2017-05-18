@@ -37,11 +37,11 @@
             </el-table-column>
             <el-table-column
                 label="作品名称"
-                prop="title"
-                :formatter="titleFormatter"
                 min-width="32"
-                align="left"
-            >
+                align="left">
+                <template scope="scope">
+                    <a :href='"#/book/" + scope.row.title'>《{{scope.row.title}}》</a>
+                </template>
             </el-table-column>
             <el-table-column
                 label="作品类别"
@@ -74,7 +74,12 @@
                 align="center">
                 <!--操作列-->
                 <template scope="scope">
-                    <el-button type="text" size="small">上传章节</el-button>
+                    <el-button 
+                        type="text" 
+                        size="small"
+                        @click="newChapterDialogVisible=true">
+                        上传章节
+                    </el-button>
                     <el-button 
                         type="text" 
                         size="small" 
@@ -82,6 +87,24 @@
                         @click="deleteMyWork(scope.row)">
                         删除作品
                     </el-button>
+                        <el-dialog title="上传章节" :visible.sync="newChapterDialogVisible">
+                        <el-form :model="newChapterForm" :label-position="newWorkFormStyle.labelPosition">
+                            <el-form-item label="章节号" :label-width="newWorkFormStyle.labelWidth">
+                                <el-input v-model="newChapterForm.chapterIndex" auto-complete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="标题" :label-width="newWorkFormStyle.labelWidth">
+                                <el-input v-model="newChapterForm.title" auto-complete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="内容" :label-width="newWorkFormStyle.labelWidth">
+                                <el-input v-model="newChapterForm.content" type="textarea"></el-input>
+                            </el-form-item>
+                        </el-form>
+                        <div slot="footer" class="dialog-footer">
+                            <el-button @click="newChapterDialogVisible = false">取 消</el-button>
+                            <el-button type="primary" @click="uploadNewChapter(scope.row)">提 交</el-button>
+                        </div>
+                        </el-dialog>
+
                 </template>
             </el-table-column>
         </el-table>
@@ -133,7 +156,7 @@
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="newWorkDialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="postNewWork()">提 交</el-button>
+                    <el-button type="primary" @click="createNewWork()">提 交</el-button>
                 </div>
             </el-dialog>
             <el-col :span="12">
@@ -155,6 +178,7 @@
                 ID: '',
                 searchInput: '',
                 newWorkDialogVisible: false,
+                newChapterDialogVisible: false,
                 newWorkForm: {
                     title: '',
                     subtitle: '',
@@ -162,6 +186,7 @@
                     category: '',
                     description: '',
                 },
+                newChapterForm: {},
                 newWorkFormStyle: {
                     labelWidth: '90px',
                     labelPosition: 'left'
@@ -206,7 +231,7 @@
             status_filter: function(value, row) {
                 return row.status == value;
             },
-            postNewWork() {
+            createNewWork() {
               if (this.newWorkForm.title.trim() && this.newWorkForm.category.trim()) {
                 this.$confirm('确认提交新作品吗？', '提示', {
                   confirmButtonText: '确定',
@@ -225,7 +250,9 @@
                       });
                       that.$emit('tableRefreshRequest');
                       that.newWorkDialogVisible = false;
-                      that.newWorkForm = {};
+                      for (var key in that.newWorkForm) {
+                          that.newWorkForm[key] = '';
+                      }
                     })
                     .catch(function (error) {
                       that.$message.error('添加作品失败\n' + error, )
@@ -256,7 +283,32 @@
                         that.$message.error('删除作品失败');
                     });
                 })
-            }
+            },
+            uploadNewChapter(row) {
+                var that = this;
+                if (Number.parseInt(this.newChapterForm.chapterIndex) && this.newChapterForm.title && this.newChapterForm.content) {
+                    this.$http.post('/api/upload-new-chapter', {
+                        bid: row.bid,
+                        ...this.newChapterForm
+                      })
+                      .then(function (response) {
+                        that.$message({
+                          message: '上传新章节成功',
+                          type: 'success'
+                        });
+                        that.newChapterDialogVisible = false;
+                        for (var key in that.newChapterForm) {
+                            that.newChapterForm[key] = '';
+                        }
+                      })
+                      .catch(function (e) {
+                        console.log(e);
+                      })
+                } else {
+                    this.$message.error('请检查输入');
+                }
+                
+            },
         },
 
         mounted: function() {
@@ -296,4 +348,7 @@
         margin-right: 30px;
     }
 
+    a {
+        color: #203d32;
+    }
 </style>

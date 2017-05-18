@@ -222,6 +222,22 @@ router.get('/api/get-categories', async(ctx, next) => {
   }
 });
 
+router.post('/api/upload-new-chapter', async(ctx, next) => {
+  var bid = ctx.request.body.bid || 0,
+      chapterIndex = ctx.request.body.chapterIndex || 0,
+      title = ctx.request.body.title || '',
+      content = ctx.request.body.content || '';
+  var queryString = 
+    'INSERT INTO bookChapters (bid, chapterIndex, chapterTitle, content) VALUES'+
+    `(${bid}, ${chapterIndex}, '${title}', '${content}')`;
+  try {
+    ctx.body = await querySQL(queryString);
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
+  }
+});
+
 function querySQL(queryString) {
   return new Promise(function (resolve, reject) {
     pool.getConnection(function (err, connection) {

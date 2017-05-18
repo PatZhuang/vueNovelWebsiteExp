@@ -22,6 +22,11 @@ export default new Router({
       path: '/personal',
       name: 'personal',
       component: personal
+    }, 
+    {
+      path: '/book/:title',
+      name: 'bookPage',
+      component: personal
     }
   ]
 })
