@@ -160,18 +160,53 @@ router.get('/api/get-all-books', async(ctx, next) => {
 router.post('/api/add-favorite-books', async(ctx, next) => {
   var uid = ctx.request.body.id || '',
     bid = ctx.request.body.bid || '';
-  if (uid == '' || bid == '') {
-    ctx.status = 200;
-    ctx.body = null;
-  } else {
-    var queryString = `INSERT INTO favorite (uid, bid) VALUES ('${uid}', ${bid})`;
 
-    try {
-      ctx.body = await querySQL(queryString);
-    } catch (e) {
-      console.log(e);
-      ctx.body = e;
-    }
+  var queryString = `INSERT INTO favorite (uid, bid) VALUES ('${uid}', ${bid})`;
+
+  try {
+    ctx.body = await querySQL(queryString);
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
+  }
+});
+
+router.post('/api/get-my-works', async(ctx, next) => {
+  var uid = ctx.request.body.id || '';
+
+  var queryString = `SELECT * FROM book JOIN bookDetail ON book.bid = bookDetail.bid WHERE book.author = '${uid}'`;
+
+  try {
+    ctx.body = await querySQL(queryString);
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
+  }
+});
+
+router.post('/api/post-new-work', async(ctx, next) => {
+  var newPost = ctx.request.body;
+  var d = new Date();
+  d = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+  var queryString = 
+    'INSERT INTO `book` (`bid`, `title`, `author`, `date`, `description`, `subtitle`, `category`, `tag`, `status`) '+
+    `VALUES (NULL, '${newPost.title}', '${newPost.author}', '${d}', '${newPost.description}', '${newPost.subtitle}', '${newPost.category}', '${newPost.tag}', '连载中');`;
+    
+  try {
+    ctx.body = await querySQL(queryString);
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
+  } 
+});
+
+router.get('/api/get-categories', async(ctx, next) => {
+  var queryString = 'SELECT * FROM category';
+  try {
+    ctx.body = await querySQL(queryString);
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
   }
 });
 
@@ -198,7 +233,7 @@ function querySQL(queryString) {
           } else {
             resolve({
               status: 'success',
-              books: rows
+              rows: rows
             })
           }
         });
