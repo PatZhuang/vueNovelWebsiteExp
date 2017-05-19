@@ -50,7 +50,6 @@
             })
             .then(function (response) {
                 that.chaptersRawData = response.data.rows;
-                console.log(that.chaptersRawData);
             })
             .catch(function (error) {
                 console.log(error);

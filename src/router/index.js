@@ -12,22 +12,27 @@ export default new Router({
   routes: [
     {
       path: '/',
+      name: 'index',
       component: index
     },
     {
       path: '/category',
+      name: 'category',
       component: allBooks
     },
     {
       path: '/personal',
+      name: 'personal',
       component: personal
     }, 
     {
       path: '/book/:title',
+      name: 'book',
       component: bookDetail
     },
     {
       path: '/book/:title/:chapter',
+      name: 'chapter',
       component: chapter
     },
     

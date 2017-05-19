@@ -77,7 +77,7 @@
                     <el-button 
                         type="text" 
                         size="small"
-                        @click="newChapterDialogVisible=true">
+                        @click="before_add_chapter(scope.row)">
                         上传章节
                     </el-button>
                     <el-button 
@@ -101,7 +101,7 @@
                         </el-form>
                         <div slot="footer" class="dialog-footer">
                             <el-button @click="newChapterDialogVisible = false">取 消</el-button>
-                            <el-button type="primary" @click="uploadNewChapter(scope.row)">提 交</el-button>
+                            <el-button type="primary" @click="uploadNewChapter(operatingBid)">提 交</el-button>
                         </div>
                         </el-dialog>
 
@@ -191,7 +191,8 @@
                     labelWidth: '90px',
                     labelPosition: 'left'
                 },
-                bookCategory: []
+                bookCategory: [],
+                operatingBid: null
             }
         },
         computed: {
@@ -230,6 +231,10 @@
             },
             status_filter: function(value, row) {
                 return row.status == value;
+            },
+            before_add_chapter: function (row) {
+                this.operatingBid = row.bid;
+                this.newChapterDialogVisible = true;
             },
             createNewWork() {
               if (this.newWorkForm.title.trim() && this.newWorkForm.category.trim()) {
@@ -284,11 +289,11 @@
                     });
                 })
             },
-            uploadNewChapter(row) {
+            uploadNewChapter(bid) {
                 var that = this;
                 if (Number.parseInt(this.newChapterForm.chapterIndex) && this.newChapterForm.title && this.newChapterForm.content) {
                     this.$http.post('/api/upload-new-chapter', {
-                        bid: row.bid,
+                        bid: bid,
                         ...this.newChapterForm
                       })
                       .then(function (response) {
@@ -300,6 +305,7 @@
                         for (var key in that.newChapterForm) {
                             that.newChapterForm[key] = '';
                         }
+                        that.$emit('tableRefreshRequest');
                       })
                       .catch(function (e) {
                         console.log(e);
