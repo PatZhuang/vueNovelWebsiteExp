@@ -89,9 +89,12 @@
               id: this.form.id
           })
           .then(function (response) {
-              var expireDate = new Date(response.data.rows[0].expiration); 
-              console.log(expireDate.toLocaleDateString());
-              that.form.vipExpiration = expireDate.toLocaleDateString();
+              if (response.data.rows.length == 0) {
+                  that.form.vipExpiration = '已过期';
+              } else {
+                var expireDate = new Date(response.data.rows[0].expiration); 
+                that.form.vipExpiration = expireDate.toLocaleDateString();
+              }
           })
           .catch(function (error) {
               console.log(error);
