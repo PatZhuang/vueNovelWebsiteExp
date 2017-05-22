@@ -17,16 +17,12 @@ app.use(async(ctx, next) => {
   await next();
 });
 
-router.get('/hello/:name', async(ctx, next) => {
-  var name = ctx.params.name;
-  ctx.response.body = `<h1>hello ${name}</h1>`;
-});
-
+// 根目录请求交给 vue-router 处理
 router.get('/', async(ctx, next) => {
   // ctx.response.redirect('#');
 });
 
-
+// 登出
 router.get('/api/logout', async(ctx, next) => {
   var now = new Date();
   var time = now.getTime();
@@ -43,6 +39,7 @@ router.get('/api/logout', async(ctx, next) => {
   }
 });
 
+// 登录
 router.post('/api/login', async(ctx, next) => {
   var
     uid = ctx.request.body.id || '',
@@ -106,6 +103,7 @@ router.post('/api/login', async(ctx, next) => {
   }
 });
 
+// 收藏书籍
 router.post('/api/favorite-books', async(ctx, next) => {
   var uid = ctx.request.body.id || '';
   if (uid == '') {
@@ -123,6 +121,7 @@ router.post('/api/favorite-books', async(ctx, next) => {
   }
 });
 
+// 删除收藏
 router.post('/api/delete-favorite-books', async(ctx, next) => {
   var uid = ctx.request.body.id || '',
     booksToDel = ctx.request.body.bids || [];
@@ -145,6 +144,7 @@ router.post('/api/delete-favorite-books', async(ctx, next) => {
   }
 });
 
+// 获取所有书籍
 router.get('/api/get-all-books', async(ctx, next) => {
   var queryString = 'SELECT * FROM book';
 
@@ -157,6 +157,7 @@ router.get('/api/get-all-books', async(ctx, next) => {
   }
 })
 
+// 添加收藏
 router.post('/api/add-favorite-books', async(ctx, next) => {
   var uid = ctx.request.body.id || '',
     bid = ctx.request.body.bid || '';
@@ -171,6 +172,7 @@ router.post('/api/add-favorite-books', async(ctx, next) => {
   }
 });
 
+// 获取我的作品
 router.post('/api/get-my-works', async(ctx, next) => {
   var uid = ctx.request.body.id || '';
 
@@ -184,6 +186,7 @@ router.post('/api/get-my-works', async(ctx, next) => {
   }
 });
 
+// 发布新作品
 router.post('/api/post-new-work', async(ctx, next) => {
   var newPost = ctx.request.body;
   var d = new Date();
@@ -200,6 +203,7 @@ router.post('/api/post-new-work', async(ctx, next) => {
   } 
 });
 
+// 删除我的作品
 router.post('/api/delete-my-work', async(ctx, next) => {
   var bid = ctx.request.body.bid;
   var queryString = `DELETE FROM book WHERE book.bid = ${bid}`;
@@ -212,6 +216,7 @@ router.post('/api/delete-my-work', async(ctx, next) => {
   }
 });
 
+// 获取书籍的所有章节
 router.get('/api/get-categories', async(ctx, next) => {
   var queryString = 'SELECT * FROM category';
   try {
@@ -222,6 +227,7 @@ router.get('/api/get-categories', async(ctx, next) => {
   }
 });
 
+// 上传新章节
 router.post('/api/upload-new-chapter', async(ctx, next) => {
   var bid = ctx.request.body.bid || 0,
       chapterIndex = ctx.request.body.chapterIndex || 0,
@@ -238,6 +244,7 @@ router.post('/api/upload-new-chapter', async(ctx, next) => {
   }
 });
 
+// 获取书本的所有章节
 router.post('/api/get-book-chapters', async(ctx, next) => {
   var bookTitle = ctx.request.body.bookTitle || '';
   var queryString = `SELECT chapterTitle FROM bookChapters JOIN book on book.bid = bookChapters.bid WHERE book.title = '${bookTitle}' ORDER BY chapterIndex`;
@@ -251,11 +258,27 @@ router.post('/api/get-book-chapters', async(ctx, next) => {
   }
 });
 
+// 获取章节详情
 router.post('/api/get-chapter', async(ctx, next) => {
   var bookTitle = ctx.request.body.bookTitle || '',
       chapterIndex = ctx.request.body.chapterIndex || 0;
   var queryString = 'SELECT chapterTitle, content FROM bookChapters JOIN book ON book.bid = bookChapters.bid WHERE book.title = '+
                     `'${bookTitle}' and chapterIndex = ${chapterIndex}`;
+  try {
+    var response = await querySQL(queryString);
+    ctx.body = response;
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
+  }
+});
+
+// 购买 vip
+router.post('/api/purchase-vip', async(ctx, next) => {
+  var id = ctx.request.body.id || '',
+      money = ctx.request.body.money || 0;
+  var queryString = 'INSERT INTO vipOrder (uid, mid, generateTime, completed, money) VALUES('+
+                    `'${id}', 'qidian', NULL, 0, ${money})`;
   try {
     var response = await querySQL(queryString);
     ctx.body = response;

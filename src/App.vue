@@ -151,6 +151,11 @@
             name: '个人中心',
             path: '/personal',
             icon: 'el-icon-star-off',
+          },
+          {
+            name: '会员中心',
+            path: '/vip',
+            icon: 'el-icon-star-on',
           }
         ],
         searchInput: '',
@@ -180,9 +185,10 @@
           case 1:
             return true;
           case 2:
+          case 3:
             return this.signed ? true : false;
           default:
-            return false;
+            return true;
         }
       },
       login: function() {

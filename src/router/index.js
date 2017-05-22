@@ -5,6 +5,7 @@ import personal from '../pages/personalPage.vue'
 import allBooks from '../pages/allBooksPage.vue'
 import bookDetail from '../pages/bookDetailPage.vue'
 import chapter from '../pages/chapterPage.vue'
+import vip from '../pages/vipPage.vue'
 
 Vue.use(Router)
 
@@ -25,6 +26,11 @@ export default new Router({
       name: 'personal',
       component: personal
     }, 
+    {
+      path: '/vip',
+      name: 'vip',
+      component: vip
+    },
     {
       path: '/book/:title',
       name: 'book',
