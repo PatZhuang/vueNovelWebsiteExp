@@ -254,7 +254,7 @@ router.post('/api/get-book-chapters', async(ctx, next) => {
 router.post('/api/get-chapter', async(ctx, next) => {
   var bookTitle = ctx.request.body.bookTitle || '',
       chapterIndex = ctx.request.body.chapterIndex || 0;
-  var queryString = 'SELECT chapterTitle, content FROM bookChapters JOIN book ON book.bid = book.chapters.bid WHERE book.title = '+
+  var queryString = 'SELECT chapterTitle, content FROM bookChapters JOIN book ON book.bid = bookChapters.bid WHERE book.title = '+
                     `'${bookTitle}' and chapterIndex = ${chapterIndex}`;
   try {
     var response = await querySQL(queryString);
