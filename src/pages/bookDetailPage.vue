@@ -20,7 +20,7 @@
                     v-for="j in 3"
                     :key="j"
                     >
-                    <a :href='"#/book/"+$route.params.title+"/"+(i-1)*3+j' v-if="chapters[(i-1)*3+j-1]" class="chapter-link">
+                    <a :href='"#/book/"+$route.params.title+"/"+((i-1)*3+j)' v-if="chapters[(i-1)*3+j-1]" class="chapter-link">
                         第 {{(i-1)*3+j}} 章 {{ chapters[(i-1)*3+j-1] }}
                     </a>
                     <p v-else> </p>

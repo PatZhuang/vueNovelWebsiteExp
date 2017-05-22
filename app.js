@@ -240,7 +240,7 @@ router.post('/api/upload-new-chapter', async(ctx, next) => {
 
 router.post('/api/get-book-chapters', async(ctx, next) => {
   var bookTitle = ctx.request.body.bookTitle || '';
-  var queryString = `SELECT chapterTitle FROM bookChapters JOIN book on bookChapters.bid WHERE book.title = '${bookTitle}' ORDER BY chapterIndex`;
+  var queryString = `SELECT chapterTitle FROM bookChapters JOIN book on book.bid = bookChapters.bid WHERE book.title = '${bookTitle}' ORDER BY chapterIndex`;
 
   try {
     var response = await querySQL(queryString);
@@ -254,7 +254,7 @@ router.post('/api/get-book-chapters', async(ctx, next) => {
 router.post('/api/get-chapter', async(ctx, next) => {
   var bookTitle = ctx.request.body.bookTitle || '',
       chapterIndex = ctx.request.body.chapterIndex || 0;
-  var queryString = 'SELECT chapterTitle, content FROM bookChapters JOIN book ON book.bid WHERE book.title = '+
+  var queryString = 'SELECT chapterTitle, content FROM bookChapters JOIN book ON book.bid = book.chapters.bid WHERE book.title = '+
                     `'${bookTitle}' and chapterIndex = ${chapterIndex}`;
   try {
     var response = await querySQL(queryString);
