@@ -10,12 +10,13 @@
                     </el-form-item>
                     <el-form-item label="到期时间" label-width="100px">
                         <span style="text-algin:left; 
-                                    font-size: 20px;font-weight: bold;
+                                    font-size: 20px;
+                                    font-weight: 500;
                                     color: #e74c3c;
                                     margin-left: 40px">
-                            {{form.vipExpire}} 
+                            {{form.vipExpiration}} 
                         </span>
-                        <span style="font-size: 14px;">天</span>
+                        <!--<span style="font-size: 14px;">天</span>-->
                     </el-form-item>
                 </el-form>  
             </el-col>
@@ -62,7 +63,7 @@
       return {
         form: {
           id: '',
-          vipExpire: 0,
+          vipExpiration: '',
           duration: '1',
           method: 'alipay'
         },
@@ -81,10 +82,25 @@
           .catch(function (error) {
               console.log(error);
           })
+      },
+      getVipExpiration() {
+          var that = this;
+          this.$http.post('/api/get-vip-expiration', {
+              id: this.form.id
+          })
+          .then(function (response) {
+              var expireDate = new Date(response.data.rows[0].expiration); 
+              console.log(expireDate.toLocaleDateString());
+              that.form.vipExpiration = expireDate.toLocaleDateString();
+          })
+          .catch(function (error) {
+              console.log(error);
+          })
       }
     },
     mounted: function () {
         this.form.id = document.cookie.replace(/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "";
+        this.getVipExpiration();
     }
   }
   

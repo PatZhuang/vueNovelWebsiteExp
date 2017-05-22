@@ -288,6 +288,19 @@ router.post('/api/purchase-vip', async(ctx, next) => {
   }
 });
 
+router.post('/api/get-vip-expiration', async(ctx, next) => {
+  var id = ctx.request.body.id || '';
+  var queryString = `SELECT expiration FROM vip WHERE uid = '${id}'`;
+
+  try {
+    var response = await querySQL(queryString);
+    ctx.body = response;
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
+  }
+});
+
 function querySQL(queryString) {
   return new Promise(function (resolve, reject) {
     pool.getConnection(function (err, connection) {
