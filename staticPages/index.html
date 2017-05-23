@@ -44,6 +44,12 @@
                     <span style="color: #e74c3c; font-size: 20px; font-weight: 600;">{{form.duration * 10}}</span>
                     <span>元</span>
                 </el-form-item>
+                <el-form-item label="账户名">
+                  <el-input v-model="form.bankID" style="width: 300px;"></el-input>
+                </el-form-item>
+                <el-form-item label="账户密码">
+                  <el-input v-model="form.bankPW" style="width: 300px;" type="password"></el-input>
+                </el-form-item>
                 <el-form-item>
                     <el-button 
                       type="primary" 
@@ -77,7 +83,9 @@
               id: '',
               vipExpiration: '',
               duration: 0,
-              method: 'alipay'
+              method: 'alipay',
+              bankID: '',
+              bankPW: ''
             },
             fullscreenLoading : false
          }
@@ -86,33 +94,68 @@
         handleSelect(key, keyPath) {
           console.log(key, keyPath);
         },
+        bankAccountLogin() {
+          var that = this;
+          return new Promise(function (resolve, reject) {
+            axios.post('/api/bank-account-login', {
+              bankID: that.form.bankID,
+              bankPW: that.form.bankPW
+            })
+            .then(function (response) {
+              if (response.data.status == 'success') {
+                resolve({status: 'success'}); 
+              } else {
+                reject({status: 'failed', error: 'login failed'});
+              }
+            })
+            .catch(function (e) {
+              console.log(e);
+              reject({status: 'failed', error: e});
+            })
+          });
+        },
+        payVip: function() {
+          var that = this;
+          return new Promise(function (resolve, reject) {
+            axios.post('/api/pay-vip', {
+              url: location.href,
+              duration: Number.parseInt(that.form.duration)
+            })
+            .then(function (response) {
+              var status = response.data.status;
+              if (status == 'success') {
+                resolve('ok');
+              }
+            })
+            .catch(function (e) {
+              console.log(e);
+              reject('failed');
+            })
+          })
+        },
+        startPay: async(that) => {
+          try {
+            await that.bankAccountLogin();
+            await that.payVip();
+            setTimeout(function() {
+              that.fullscreenLoading = false;
+              that.$notify({
+                title: '付款成功',
+                message: '该页面将在2秒后关闭',
+                duration: 2000,
+                type: 'success',
+                onClose: () => self.close()
+              });  
+            }, 2000);
+          } catch (e) {
+            that.fullscreenLoading = false;
+            that.$message.error('请检查账户密码是否输入正确');
+          }
+        },
         onSubmit() {
           var that = this;
           this.fullscreenLoading = true;
-          console.log(Number.parseInt(this.form.duration));
-          axios.post('/api/pay-vip', {
-            url: location.href,
-            duration: Number.parseInt(this.form.duration)
-          })
-          .then(function (response) {
-            var status = response.data.status;
-            if (status == 'success') {
-              setTimeout(function() {
-                that.fullscreenLoading = false;
-                that.$notify({
-                  title: '付款成功',
-                  message: '该页面将在2秒后关闭',
-                  duration: 2000,
-                  type: 'success',
-                  onClose: () => self.close()
-                });
-              }, 2000);
-            }
-            console.log(response.data);
-          })
-          .catch(function (e) {
-            console.log(e);
-          })
+          this.startPay(that);
         },
         onCancel() {
           var that = this;

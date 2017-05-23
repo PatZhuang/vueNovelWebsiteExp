@@ -331,15 +331,11 @@ router.post('/api/pay-vip', async(ctx, next) => {
       }
       // 开通月份处理
       var month = expireDate.getMonth();
-      console.log('month: ' + month);
-      console.log('duration: ' + duration);
       if (month + duration > 11) {
         expireDate.setFullYear(expireDate.getFullYear() + 1);
         expireDate.setMonth(expireDate.getMonth() + duration - 12);
       } else {
-        console.log('month before: '+expireDate.getMonth());
         expireDate.setMonth(expireDate.getMonth() + duration);
-        console.log('month after: '+expireDate.getMonth());
       }
       var formattedDate = expireDate.toLocaleDateString().replace(/\//g, '-') 
                         + ' ' 
@@ -416,6 +412,34 @@ router.post('/api/get-order-info', async(ctx, next) => {
   }
 });
 
+router.post('/api/bank-account-login', async(ctx, next) => {
+  var
+    uid = ctx.request.body.bankID || ' ',
+    pwd = ctx.request.body.bankPW || ' ';
+  console.log("uid: " + uid + ' pwd: ' + pwd);
+  var queryString = `SELECT * from bankAccount where uid = '${uid}' and password = '${pwd}'`;
+  
+  try {
+    var response = await querySQL(queryString);
+    if (response.rows.length == 0) {
+      ctx.body = {
+        status: 'failed',
+        message: 'login failed'
+      }
+    } else {
+      ctx.body = {
+        status : 'success'
+      }
+    }
+  } catch (e) {
+    console.log(e);
+    ctx.body = {
+      error: e,
+      status: 'failed'
+    }
+  }
+});
+
 function querySQL(queryString) {
   return new Promise(function (resolve, reject) {
     pool.getConnection(function (err, connection) {
@@ -447,7 +471,6 @@ function querySQL(queryString) {
     })
   })
 }
-
 
 app.use(router.routes());
 // 在端口3000监听:
