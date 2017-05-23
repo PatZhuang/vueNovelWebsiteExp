@@ -72,11 +72,27 @@
     },
     methods: {
       onSubmit() {
+          var payWindow = window.open('/pay', '_blank');
+          var that = this;
           this.$http.post('/api/purchase-vip', {
               id: this.form.id,
               money: this.form.duration * 10
           })
           .then(function (response) {
+              console.log(response.data.rows[0]);
+            //   payWindow.location.href += `?id=${response.data.rows[0].uid}&`
+            //                             +`mid=${response.data.rows[0].mid}&`
+            //                             +`generateTime=${response.data.rows[0].generateTime}`;
+              that.$alert('请前往付款页面付款', '等待付款', {
+                confirmButtonText: '确定',
+                cancelButtonClass: '取消',
+                callback: action => {
+                    that.$message({
+                        type: 'info',
+                        message: `action: ${ action }`
+                    });
+                }
+              });
               console.log(response);
           })
           .catch(function (error) {

@@ -276,9 +276,14 @@ router.post('/api/get-chapter', async(ctx, next) => {
 // 购买 vip
 router.post('/api/purchase-vip', async(ctx, next) => {
   var id = ctx.request.body.id || '',
-      money = ctx.request.body.money || 0;
+      money = ctx.request.body.money || 0,
+      timeStamp = (new Date());
+      timeStamp = timeStamp.toLocaleDateString().replace(/\//g, '-') 
+                + ' ' 
+                + timeStamp.toTimeString().split(' ')[0];
+  console.log(timeStamp);
   var queryString = 'INSERT INTO vipOrder (uid, mid, generateTime, completed, money) VALUES('+
-                    `'${id}', 'qidian', NULL, 0, ${money})`;
+                    `'${id}', 'qidian', '${timeStamp}', 0, ${money})`;
   try {
     var response = await querySQL(queryString);
     ctx.body = response;
