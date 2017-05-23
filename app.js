@@ -4,12 +4,14 @@ const router = require('koa-router')();
 const bodyParser = require('koa-bodyparser');
 const server = require('koa-static');
 const path = require('path');
+const url = require('url');
 // 创建一个Koa对象表示web app本身:
 const app = new Koa();
 
 const pool = require('./module/sqlpool.js');
 
 app.use(bodyParser());
+app.use(server(path.resolve('./staticPages')));
 
 // 对于任何请求，app将调用该异步函数处理请求：
 app.use(async(ctx, next) => {
@@ -277,16 +279,20 @@ router.post('/api/get-chapter', async(ctx, next) => {
 router.post('/api/purchase-vip', async(ctx, next) => {
   var id = ctx.request.body.id || '',
       money = ctx.request.body.money || 0,
-      timeStamp = (new Date());
-      timeStamp = timeStamp.toLocaleDateString().replace(/\//g, '-') 
+      generateTime = (new Date());
+      generateTime = generateTime.toLocaleDateString().replace(/\//g, '-') 
                 + ' ' 
-                + timeStamp.toTimeString().split(' ')[0];
-  console.log(timeStamp);
+                + generateTime.toTimeString().split(' ')[0];
+  console.log(generateTime);
   var queryString = 'INSERT INTO vipOrder (uid, mid, generateTime, completed, money) VALUES('+
-                    `'${id}', 'qidian', '${timeStamp}', 0, ${money})`;
+                    `'${id}', 'qidian', '${generateTime}', 0, ${money})`;
   try {
-    var response = await querySQL(queryString);
-    ctx.body = response;
+    await querySQL(queryString);
+    ctx.body = {
+      id: id,
+      mid: 'qidian',
+      generateTime: generateTime
+    };
   } catch (e) {
     console.log(e);
     ctx.body = e;
@@ -304,6 +310,12 @@ router.post('/api/get-vip-expiration', async(ctx, next) => {
     console.log(e);
     ctx.body = e;
   }
+});
+
+router.post('/api/pay-vip', async(ctx, next) => {
+  var href = ctx.request.body.url || '';
+  console.log(url.parse(href));
+  ctx.body = url.parse(href);
 });
 
 function querySQL(queryString) {

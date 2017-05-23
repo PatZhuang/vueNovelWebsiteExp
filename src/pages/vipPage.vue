@@ -48,9 +48,9 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">付款</el-button>
-                    <el-button type="text" @click="onSubmit">取消</el-button>
+                    <el-button type="plain" @click="onCancel">取消</el-button>
                 </el-form-item>
-            </el-form>
+                </el-form>
             </el-col>
         </el-row>
   </div>
@@ -72,17 +72,18 @@
     },
     methods: {
       onSubmit() {
-          var payWindow = window.open('/pay', '_blank');
+          var payWindow = window.open('http://localhost:3000/index.html', '_blank');
           var that = this;
           this.$http.post('/api/purchase-vip', {
               id: this.form.id,
               money: this.form.duration * 10
           })
           .then(function (response) {
-              console.log(response.data.rows[0]);
-            //   payWindow.location.href += `?id=${response.data.rows[0].uid}&`
-            //                             +`mid=${response.data.rows[0].mid}&`
-            //                             +`generateTime=${response.data.rows[0].generateTime}`;
+              console.log(response.data);
+              payWindow.location.href = payWindow.location.href
+                                        +`?id=${response.data.id}&`
+                                        +`mid=${response.data.mid}&`
+                                        +`generateTime=${response.data.generateTime}`;
               that.$alert('请前往付款页面付款', '等待付款', {
                 confirmButtonText: '确定',
                 cancelButtonClass: '取消',
@@ -98,6 +99,9 @@
           .catch(function (error) {
               console.log(error);
           })
+      },
+      onCancel() {
+        
       },
       getVipExpiration() {
           var that = this;
