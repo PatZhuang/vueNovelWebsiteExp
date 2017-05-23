@@ -114,7 +114,22 @@
           })
         },
         onCancel() {
-
+          var that = this;
+          this.$confirm('是否取消付款？', '取消付款', {
+            confirmButtonText: '取消',
+            cancelButtonText: '不取消',
+            callback: action => {
+              if (action == 'confirm') {
+                that.$notify({
+                  title: '付款已取消',
+                  message: '该页面将在2秒后关闭',
+                  duration: 2000,
+                  type: 'info',
+                  onClose: () => self.close()
+                }) 
+              }
+            }
+          });
         }
       }
     })
