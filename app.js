@@ -314,8 +314,21 @@ router.post('/api/get-vip-expiration', async(ctx, next) => {
 
 router.post('/api/pay-vip', async(ctx, next) => {
   var href = ctx.request.body.url || '';
-  console.log(url.parse(href));
-  ctx.body = url.parse(href);
+  var query = url.parse(href, true).query;
+  var queryString = 'UPDATE vipOrder set completed = 1 WHERE '+
+                    `uid = '${query.id}' and mid = '${query.mid}' and generateTime = '${query.generateTime}'`;
+  
+  try {
+    var response = await querySQL(queryString);
+    ctx.body = {
+      status: 'success'
+    };
+  } catch (e) {
+    console.log(e);
+    ctx.body = {
+      status: 'failed'
+    }
+  }
 });
 
 function querySQL(queryString) {
