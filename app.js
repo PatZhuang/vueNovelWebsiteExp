@@ -313,20 +313,68 @@ router.post('/api/get-vip-expiration', async(ctx, next) => {
 });
 
 router.post('/api/pay-vip', async(ctx, next) => {
-  var href = ctx.request.body.url || '';
-  var query = url.parse(href, true).query;
+  var href = ctx.request.body.url || '',
+      query = url.parse(href, true).query,
+      duration = ctx.request.body.duration || 0;
   var queryString = 'UPDATE vipOrder set completed = 1 WHERE '+
                     `uid = '${query.id}' and mid = '${query.mid}' and generateTime = '${query.generateTime}'`;
-  
   try {
     var response = await querySQL(queryString);
-    ctx.body = {
-      status: 'success'
-    };
+    // 付款成功
+    queryString = `SELECT * FROM vip WHERE uid = '${query.id}'`;
+    try {
+      response = await querySQL(queryString);
+      var expireDate = new Date();
+      if (response.rows.length == 1) {
+        // 已经开通过 vip 的处理
+        expireDate.setTime(response.rows[0].expiration);
+      }
+      // 开通月份处理
+      var month = expireDate.getMonth();
+      console.log('month: ' + month);
+      console.log('duration: ' + duration);
+      if (month + duration > 11) {
+        expireDate.setFullYear(expireDate.getFullYear() + 1);
+        expireDate.setMonth(expireDate.getMonth() + duration - 12);
+      } else {
+        console.log('month before: '+expireDate.getMonth());
+        expireDate.setMonth(expireDate.getMonth() + duration);
+        console.log('month after: '+expireDate.getMonth());
+      }
+      var formattedDate = expireDate.toLocaleDateString().replace(/\//g, '-') 
+                        + ' ' 
+                        + expireDate.toTimeString().split(' ')[0];
+      
+      if (response.rows.length == 0) {
+        queryString = 'INSERT INTO vip (uid, expiration) VALUES'
+                              + `('${query.id}', '${formattedDate}')`;
+      } else {
+        queryString = `UPDATE vip SET expiration = '${formattedDate}' WHERE uid = '${query.id}'`;
+      }
+      try {
+          response = await querySQL(queryString);
+          ctx.body = {
+            status: 'success'
+          }
+      } catch (e) {
+        console.log(e);
+        ctx.body = {
+          status: 'failed',
+          message: '开通 vip 失败'
+        }
+      }
+    } catch (e) {
+      console.log(e);
+      ctx.body = {
+        status: 'failed',
+        message: '查询 vip 状态失败'
+      }
+    }
   } catch (e) {
     console.log(e);
     ctx.body = {
-      status: 'failed'
+      status: 'failed',
+      message: '付款失败'
     }
   }
 });
@@ -351,6 +399,20 @@ router.post('/api/vip-purchase-status', async(ctx, next) => {
     console.log(e);
     ctx.body = e;
 
+  }
+});
+
+router.post('/api/get-order-info', async(ctx, next) => {
+  var href = ctx.request.body.url || '',
+      query = url.parse(href, true).query;
+  var queryString = 'SELECT * FROM vipOrder WHERE '
+                   +`uid = '${query.id}' and mid = '${query.mid}' and generateTime = '${query.generateTime}'`;
+  try {
+    var response = await querySQL(queryString);
+    ctx.body = response;
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
   }
 });
 
@@ -385,6 +447,8 @@ function querySQL(queryString) {
     })
   })
 }
+
+
 app.use(router.routes());
 // 在端口3000监听:
 app.listen(3000);

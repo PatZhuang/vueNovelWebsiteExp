@@ -76,7 +76,7 @@
             form: {
               id: '',
               vipExpiration: '',
-              duration: '1',
+              duration: 0,
               method: 'alipay'
             },
             fullscreenLoading : false
@@ -89,9 +89,10 @@
         onSubmit() {
           var that = this;
           this.fullscreenLoading = true;
-          console.log(location.href);
+          console.log(Number.parseInt(this.form.duration));
           axios.post('/api/pay-vip', {
-            url: location.href
+            url: location.href,
+            duration: Number.parseInt(this.form.duration)
           })
           .then(function (response) {
             var status = response.data.status;
@@ -130,7 +131,23 @@
               }
             }
           });
+        },
+        getOrderInfo() {
+          var that = this;
+          axios.post('/api/get-order-info', {
+            url: location.href
+          })
+          .then(function (response) {
+            that.form.id = response.data.rows[0].uid;
+            that.form.duration = response.data.rows[0].money / 10;
+          })
+          .catch(function (e) {
+            console.log(e);
+          })
         }
+      },
+      mounted: function() {
+        this.getOrderInfo()
       }
     })
   </script>
