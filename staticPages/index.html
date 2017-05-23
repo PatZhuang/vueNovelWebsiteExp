@@ -45,7 +45,13 @@
                     <span>元</span>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="onSubmit">确认付款</el-button>
+                    <el-button 
+                      type="primary" 
+                      @click="onSubmit" 
+                      ref="confirmBtn"
+                      v-loading.fullscreen.lock="fullscreenLoading">
+                      确认付款
+                    </el-button>
                     <el-button type="plain" @click="onCancel">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -73,6 +79,7 @@
               duration: '1',
               method: 'alipay'
             },
+            fullscreenLoading : false
          }
       },
       methods: {
@@ -80,11 +87,26 @@
           console.log(key, keyPath);
         },
         onSubmit() {
+          var that = this;
+          this.fullscreenLoading = true;
           console.log(location.href);
           axios.post('/api/pay-vip', {
             url: location.href
           })
           .then(function (response) {
+            var status = response.data.status;
+            if (status == 'success') {
+              setTimeout(function() {
+                that.fullscreenLoading = false;
+                that.$notify({
+                  title: '付款成功',
+                  message: '该页面将在3秒后关闭',
+                  duration: 3000,
+                  type: 'success',
+                  onClose: () => self.close()
+                });
+              }, 2000);
+            }
             console.log(response.data);
           })
           .catch(function (e) {
