@@ -331,6 +331,29 @@ router.post('/api/pay-vip', async(ctx, next) => {
   }
 });
 
+router.post('/api/vip-purchase-status', async(ctx, next) => {
+  var query = ctx.request.body.query || {};
+  var queryString = 'SELECT completed FROM vipOrder WHERE '+
+                    `uid = '${query.id}' and mid = '${query.mid}' and generateTime = '${query.generateTime}'`;
+  try {
+    var response = await querySQL(queryString);
+    if (response.rows.length != 0) {
+      var completed = response.rows[0].completed;
+      if (completed != 0) {
+        ctx.body = { status: 'success' };
+      } else {
+        ctx.body = { status: 'failed' };
+      }
+    } else {
+      ctx.body = { status: 'failed' };
+    }
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
+
+  }
+});
+
 function querySQL(queryString) {
   return new Promise(function (resolve, reject) {
     pool.getConnection(function (err, connection) {

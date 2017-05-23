@@ -48,7 +48,6 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">付款</el-button>
-                    <el-button type="plain" @click="onCancel">取消</el-button>
                 </el-form-item>
                 </el-form>
             </el-col>
@@ -67,7 +66,12 @@
           duration: '1',
           method: 'alipay'
         },
-        labelPos: 'top'
+        labelPos: 'top',
+        query: {
+            id: '',
+            mid: '',
+            generateTime: ''
+        }
       }
     },
     methods: {
@@ -80,28 +84,58 @@
           })
           .then(function (response) {
               console.log(response.data);
+              that.query.id = response.data.id || '';
+              that.query.mid = response.data.mid || '';
+              that.query.generateTime = response.data.generateTime || '';
               payWindow.location.href = payWindow.location.href
                                         +`?id=${response.data.id}&`
                                         +`mid=${response.data.mid}&`
                                         +`generateTime=${response.data.generateTime}`;
-              that.$alert('请前往付款页面付款', '等待付款', {
-                confirmButtonText: '确定',
+              that.$confirm('请前往付款页面付款', '等待付款', {
+                confirmButtonText: '已完成付款',
                 cancelButtonClass: '取消',
-                callback: action => {
-                    that.$message({
-                        type: 'info',
-                        message: `action: ${ action }`
-                    });
-                }
+                beforeClose: (action, instance, done) => {
+                    if (action == 'cancel') {
+                        that.$notify({
+                            title: '开通失败',
+                            message: '付款已取消',
+                            type: 'error'
+                        })
+                        done();
+                    } else if (action == 'confirm') {
+                        let fullLoading = that.$loading({ fullscreen: true });
+                        that.$http.post('/api/vip-purchase-status', {
+                            query: that.query
+                        })
+                        .then(function (response) {
+                            if (response.data.status == 'success') {
+                                setTimeout(function() {
+                                    that.$message({
+                                    message: '开通成功',
+                                    type: 'success'
+                                })
+                                fullLoading.close();
+                                done();
+                                that.getVipExpiration();
+                                }, 1500);
+                            } else {
+                                setTimeout(function() {
+                                    fullLoading.close();
+                                    that.$message.error('付款未完成');    
+                                }, 1500);
+                            }
+                        })
+                        .catch(function (e) {
+                            console.log(e);
+                        })
+                    }
+                },
               });
               console.log(response);
           })
           .catch(function (error) {
               console.log(error);
           })
-      },
-      onCancel() {
-        
       },
       getVipExpiration() {
           var that = this;
