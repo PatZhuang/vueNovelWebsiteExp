@@ -87,7 +87,7 @@
               bankID: '',
               bankPW: ''
             },
-            fullscreenLoading : false
+            fullscreenLoading : false,
          }
       },
       methods: {
@@ -141,12 +141,12 @@
               that.fullscreenLoading = false;
               that.$notify({
                 title: '付款成功',
-                message: '该页面将在2秒后关闭',
+                message: `2秒后回到商家页面`,
                 duration: 2000,
                 type: 'success',
-                onClose: () => self.close()
+                onClose: () => history.back()
               });  
-            }, 2000);
+            }, 1000);
           } catch (e) {
             setTimeout(function() {
               that.fullscreenLoading = false;

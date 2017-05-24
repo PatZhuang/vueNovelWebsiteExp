@@ -47,7 +47,7 @@
                     <span>元</span>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="onSubmit">付款</el-button>
+                    <el-button type="primary" @click="onSubmit(this)">付款</el-button>
                 </el-form-item>
                 </el-form>
             </el-col>
@@ -75,67 +75,40 @@
       }
     },
     methods: {
-      onSubmit() {
-          var payWindow = window.open('http://localhost:3000/index.html', '_blank');
-          var that = this;
-          this.$http.post('/api/purchase-vip', {
-              id: this.form.id,
-              money: this.form.duration * 10
-          })
-          .then(function (response) {
+      orderVip() {
+        var that = this;
+        return new Promise(function (resolve, reject) {
+          that.$http.post('/api/purchase-vip', {
+              id: that.form.id,
+              money: that.form.duration * 10
+            })
+            .then(function (response) {
               console.log(response.data);
               that.query.id = response.data.id || '';
               that.query.mid = response.data.mid || '';
               that.query.generateTime = response.data.generateTime || '';
-              payWindow.location.href = payWindow.location.href
-                                        +`?id=${response.data.id}&`
-                                        +`mid=${response.data.mid}&`
-                                        +`generateTime=${response.data.generateTime}`;
-              that.$confirm('请前往付款页面付款', '等待付款', {
-                confirmButtonText: '已完成付款',
-                cancelButtonClass: '取消',
-                beforeClose: (action, instance, done) => {
-                    if (action == 'cancel') {
-                        that.$notify({
-                            title: '开通失败',
-                            message: '付款已取消',
-                            type: 'error'
-                        })
-                        done();
-                    } else if (action == 'confirm') {
-                        let fullLoading = that.$loading({ fullscreen: true });
-                        that.$http.post('/api/vip-purchase-status', {
-                            query: that.query
-                        })
-                        .then(function (response) {
-                            if (response.data.status == 'success') {
-                                setTimeout(function() {
-                                    that.$message({
-                                    message: '开通成功',
-                                    type: 'success'
-                                })
-                                fullLoading.close();
-                                done();
-                                that.getVipExpiration();
-                                }, 1500);
-                            } else {
-                                setTimeout(function() {
-                                    fullLoading.close();
-                                    that.$message.error('付款未完成');    
-                                }, 1500);
-                            }
-                        })
-                        .catch(function (e) {
-                            console.log(e);
-                        })
-                    }
-                },
-              });
-              console.log(response);
-          })
-          .catch(function (error) {
+              resolve('ok');
+            })
+            .catch(function (error) {
               console.log(error);
-          })
+              reject('failed');
+            })
+        })
+      },
+      payVip: async(that) => {
+        // var paymentPage = window.open('http://localhost:3000/index.html', '_blank');
+        try {
+            await that.orderVip();
+            var queryString = `?id=${that.query.id}&`
+                             +`mid=${that.query.mid}&`
+                             +`generateTime=${that.query.generateTime}`;
+            location.href = 'http://localhost:3000/index.html' + queryString; 
+        } catch (e) {
+            console.log(e);
+        }
+      },
+      onSubmit() {
+          this.payVip(this);            
       },
       getVipExpiration() {
           var that = this;
@@ -144,7 +117,7 @@
           })
           .then(function (response) {
               if (response.data.rows.length == 0) {
-                  that.form.vipExpiration = '已过期';
+                  that.form.vipExpiration = '未开通';
               } else {
                 var expireDate = new Date(response.data.rows[0].expiration); 
                 that.form.vipExpiration = expireDate.toLocaleDateString();
