@@ -148,8 +148,10 @@
               });  
             }, 2000);
           } catch (e) {
-            that.fullscreenLoading = false;
-            that.$message.error('请检查账户密码是否输入正确');
+            setTimeout(function() {
+              that.fullscreenLoading = false;
+              that.$message.error('请检查账户密码是否输入正确');
+            }, 1000);
           }
         },
         onSubmit() {
