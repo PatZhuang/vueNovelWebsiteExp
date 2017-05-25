@@ -155,10 +155,11 @@
                         label="封面"
                         :label-width="newWorkFormStyle.labelWidth">
                         <el-upload
-                        class="upload-demo"
-                        drag
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :file-list="newWorkForm.cover">
+                            drag
+                            action="/api/upload-cover"
+                            :file-list="cover"
+                            :on-success="handleUploadCoverSuccess"
+                            name="cover">
                             <i class="el-icon-upload"></i>
                             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                             <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -205,8 +206,9 @@
                     category: '',
                     description: '',
                     price: 0,
-                    cover: []
+                    coverURL: ''
                 },
+                cover: [],
                 newChapterForm: {},
                 newWorkFormStyle: {
                     labelWidth: '90px',
@@ -336,6 +338,11 @@
                 }
                 
             },
+            handleUploadCoverSuccess(response, file, fileList) {
+                this.newWorkForm.coverURL = response.url;
+                console.log(response.url);
+                this.cover = fileList.slice(-1);
+            }
         },
 
         mounted: function() {

@@ -1,13 +1,15 @@
 // 导入koa，和koa 1.x不同，在koa2中，我们导入的是一个class，因此用大写的Koa表示:
 const Koa = require('koa');
 const router = require('koa-router')();
+const multer = require('koa-multer');
 const bodyParser = require('koa-bodyparser');
 const server = require('koa-static');
 const path = require('path');
 const url = require('url');
+ 
 // 创建一个Koa对象表示web app本身:
 const app = new Koa();
-
+// SQL 连接池
 const pool = require('./module/sqlpool.js');
 
 app.use(bodyParser());
@@ -191,11 +193,13 @@ router.post('/api/get-my-works', async(ctx, next) => {
 // 发布新作品
 router.post('/api/post-new-work', async(ctx, next) => {
   var newPost = ctx.request.body;
+  console.log(newPost);
   var d = new Date();
+  var coverURL = newPost.coverURL || 'default';
   d = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
   var queryString = 
-    'INSERT INTO `book` (`bid`, `title`, `author`, `date`, `description`, `subtitle`, `category`, `tag`, `status`, `price`) '+
-    `VALUES (NULL, '${newPost.title}', '${newPost.author}', '${d}', '${newPost.description}', '${newPost.subtitle}', '${newPost.category}', '${newPost.tag}', '连载中', ${newPost.price});`;
+    'INSERT INTO book (bid, title, author, coverURL, date, description, subtitle, category, tag, status, price) '+
+    `VALUES (NULL, '${newPost.title}', '${newPost.author}', '${coverURL}','${d}', '${newPost.description}', '${newPost.subtitle}', '${newPost.category}', '${newPost.tag}', '连载中', ${newPost.price});`;
     
   try {
     ctx.body = await querySQL(queryString);
@@ -275,7 +279,7 @@ router.post('/api/get-chapter', async(ctx, next) => {
   }
 });
 
-// 购买 vip
+// 购买起点币
 router.post('/api/purchase', async(ctx, next) => {
   var id = ctx.request.body.id || '',
       money = ctx.request.body.money || 0,
@@ -299,6 +303,7 @@ router.post('/api/purchase', async(ctx, next) => {
   }
 });
 
+// 获取账户余额
 router.post('/api/get-balance', async(ctx, next) => {
   var id = ctx.request.body.id || '';
   var queryString = `SELECT balance FROM qidianbi WHERE uid = '${id}'`;
@@ -311,6 +316,7 @@ router.post('/api/get-balance', async(ctx, next) => {
   }
 });
 
+// 付款
 router.post('/api/pay', async(ctx, next) => {
   var href = ctx.request.body.url || '',
       query = url.parse(href, true).query,
@@ -363,6 +369,7 @@ router.post('/api/pay', async(ctx, next) => {
   }
 });
 
+// 获取付款状态
 router.post('/api/purchase-status', async(ctx, next) => {
   var query = ctx.request.body.query || {};
   var queryString = 'SELECT completed FROM vipOrder WHERE '+
@@ -386,6 +393,7 @@ router.post('/api/purchase-status', async(ctx, next) => {
   }
 });
 
+// 获取订单详情
 router.post('/api/get-order-info', async(ctx, next) => {
   var href = ctx.request.body.url || '',
       query = url.parse(href, true).query;
@@ -400,6 +408,7 @@ router.post('/api/get-order-info', async(ctx, next) => {
   }
 });
 
+// 登录银行账户
 router.post('/api/bank-account-login', async(ctx, next) => {
   var
     uid = ctx.request.body.bankID || ' ',
@@ -427,6 +436,16 @@ router.post('/api/bank-account-login', async(ctx, next) => {
     }
   }
 });
+
+// koa-multer 用于图片上传
+const upload = multer({ dest: './staticPages/covers/' });
+// 处理封面上传
+router.post('/api/upload-cover', upload.single('cover'), async(ctx) => {
+  ctx.body = {
+    name: ctx.req.file.filename,
+    url: ctx.req.file.path
+  };
+}); 
 
 function querySQL(queryString) {
   return new Promise(function (resolve, reject) {
@@ -459,6 +478,8 @@ function querySQL(queryString) {
     })
   })
 }
+
+
 
 app.use(router.routes());
 // 在端口3000监听:
