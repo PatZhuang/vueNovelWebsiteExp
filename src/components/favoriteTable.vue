@@ -12,7 +12,10 @@
       </el-table-column>
       <el-table-column prop="category" label="类别" min-width="20" align="center" :filters="catFilter" :filter-method="cat_filter" filter-placement="bottom-end" ref="catColumn">
       </el-table-column>
-      <el-table-column prop="title" label="书名" min-width="30" align="center" :formatter="titleFormatter">
+      <el-table-column label="书名" min-width="30" align="center">
+          <template scope="scope">
+                <a :href='"#/book/" + scope.row.title'>《{{scope.row.title}}》</a>
+          </template>
       </el-table-column>
       <el-table-column prop="author" label="作者" min-width="20" align="center">
       </el-table-column>
@@ -81,9 +84,6 @@
       }
     },
     methods: {
-      titleFormatter: function(row, column) {
-        return `《${row.title}》`;
-      },
       cat_filter: function(value, row) {
         return row.category == value;
       },
