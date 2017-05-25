@@ -280,10 +280,10 @@ router.post('/api/get-book-chapters', async(ctx, next) => {
 
 // 获取章节详情
 router.post('/api/get-chapter', async(ctx, next) => {
-  var bookTitle = ctx.request.body.bookTitle || '',
+  var bid = ctx.request.body.bid || '',
       chapterIndex = ctx.request.body.chapterIndex || 0;
-  var queryString = 'SELECT chapterTitle, content FROM bookChapters JOIN book ON book.bid = bookChapters.bid WHERE book.title = '+
-                    `'${bookTitle}' and chapterIndex = ${chapterIndex}`;
+  var queryString = 'SELECT chapterTitle, content FROM bookChapters WHERE bid = '+
+                    `'${bid}' and chapterIndex = ${chapterIndex}`;
   try {
     var response = await querySQL(queryString);
     ctx.body = response;

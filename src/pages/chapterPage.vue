@@ -46,22 +46,60 @@
             return {
                 rawContent: '',
                 chapterTitle: '',
-                chapterCount: 0
+                chapterCount: 0,
+                bookInfo: {}
             }
         },
         methods: {
-            getChapter() {
+            getBookInfoByTitle() {
                 var that = this;
-                this.$http.post('/api/get-chapter', {
-                chapterIndex: Number.parseInt(this.$route.params.chapter),
-                bookTitle: this.$route.params.title
+                return new Promise(function (resolve, reject) {
+                    that.$http.post('/api/get-book-info-by-title', {
+                        bookTitle: that.$route.params.title
+                    })
+                    .then(function (response) {
+                        that.bookInfo = response.data.rows[0];
+                        that.bookInfo.coverURL = 'http://localhost:3000/covers/' + that.bookInfo.coverURL;
+                        resolve('ok');
+                    })
+                    .catch(function (e) {
+                        console.log(e);
+                        reject(e);
+                    })  
                 })
-                .then(function (response) {
-                    that.rawContent = response.data.rows[0].content;
-                    that.chapterTitle = response.data.rows[0].chapterTitle;
-                })
-                .catch(function (e) {
-                    console.log(e);
+            },
+            getCurrentChapter() {
+                var that = this;
+                return new Promise(function (resolve, reject) {
+                    that.$http.post('/api/get-chapter', {
+                        chapterIndex: Number.parseInt(that.$route.params.chapter),
+                        bid: that.bookInfo.bid
+                    })
+                    .then(function (response) {
+                        that.rawContent = response.data.rows[0].content;
+                        that.chapterTitle = response.data.rows[0].chapterTitle;
+                        resolve('ok');
+                    })
+                    .catch(function (e) {
+                        console.log(e);
+                        reject(e);
+                    });
+                });
+            },
+            getChapters() {
+                var that = this;
+                return new Promise(function (resolve, reject) {
+                    that.$http.post('/api/get-book-chapters', {
+                        bid: that.bookInfo.bid
+                    })
+                    .then(function (response) {
+                        that.chapterCount = response.data.rows.length;
+                        resolve('ok');
+                    })
+                    .catch(function (e) {
+                        console.log(e);
+                        reject(e);
+                    });
                 })
             }
         },
@@ -100,21 +138,19 @@
         },
         mounted() {
             var that = this;
-            this.$http.post('/api/get-book-chapters', {
-                bookTitle: this.$route.params.title
-            })
-            .then(function (response) {
-                that.chapterCount = response.data.rows.length;
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-
-            this.getChapter();            
+            (async(that) => {
+                try {
+                    await that.getBookInfoByTitle();
+                    await that.getChapters();
+                    await that.getCurrentChapter();
+                } catch (e) {
+                    console.log(e);
+                }
+            })(this);
         },
         watch: {
             curChapter: function (newChapter) {
-                this.getChapter();
+                this.getCurrentChapter();
             }
         }
     }

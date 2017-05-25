@@ -24,6 +24,7 @@
                 </el-col>
             </el-row>
 
+            <br>
             <hr>
             <br>
             <!--章节列表-->
@@ -94,18 +95,17 @@
                     })
                 })
             },
-            init: async (that) => {
-                // 获取书本信息，获取章节信息
+        },
+        mounted() {
+            // 获取书本信息，获取章节信息
+            (async(that) => {
                 try {
                     await that.getBookInfoByTitle();
                     await that.getBookChapters();   
                 } catch (e) {
                     console.log(e);
                 }
-            }
-        },
-        mounted() {
-            this.init(this);
+            })(this);
         }
     }
 </script>
@@ -119,9 +119,8 @@
     hr {
         border: none;
         height: 1px;
-        background-color: lightgray;
+        background-color: #e3e3e3;
         margin: 0 5%;
-        margin-top: 15px;
         width: auto;
     }
 </style>
