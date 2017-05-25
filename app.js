@@ -194,8 +194,8 @@ router.post('/api/post-new-work', async(ctx, next) => {
   var d = new Date();
   d = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
   var queryString = 
-    'INSERT INTO `book` (`bid`, `title`, `author`, `date`, `description`, `subtitle`, `category`, `tag`, `status`) '+
-    `VALUES (NULL, '${newPost.title}', '${newPost.author}', '${d}', '${newPost.description}', '${newPost.subtitle}', '${newPost.category}', '${newPost.tag}', '连载中');`;
+    'INSERT INTO `book` (`bid`, `title`, `author`, `date`, `description`, `subtitle`, `category`, `tag`, `status`, `price`) '+
+    `VALUES (NULL, '${newPost.title}', '${newPost.author}', '${d}', '${newPost.description}', '${newPost.subtitle}', '${newPost.category}', '${newPost.tag}', '连载中', ${newPost.price});`;
     
   try {
     ctx.body = await querySQL(queryString);

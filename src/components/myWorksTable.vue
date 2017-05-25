@@ -144,6 +144,25 @@
                         label="标签" 
                         :label-width="newWorkFormStyle.labelWidth">
                         <el-input v-model="newWorkForm.tag" auto-complete="off"></el-input>
+                    </el-form-item>     
+                    <el-form-item
+                        label="章节单价"
+                        :label-width="newWorkFormStyle.labelWidth">
+                        <el-input-number v-model="newWorkForm.price" :step="10" :min="0"></el-input-number>
+                        &nbsp;&nbsp;&nbsp;起点币
+                    </el-form-item>
+                    <el-form-item
+                        label="封面"
+                        :label-width="newWorkFormStyle.labelWidth">
+                        <el-upload
+                        class="upload-demo"
+                        drag
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        :file-list="newWorkForm.cover">
+                            <i class="el-icon-upload"></i>
+                            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+                        </el-upload>
                     </el-form-item>
                     <el-form-item 
                         label="简介" 
@@ -185,6 +204,8 @@
                     tag: '',
                     category: '',
                     description: '',
+                    price: 0,
+                    cover: []
                 },
                 newChapterForm: {},
                 newWorkFormStyle: {
