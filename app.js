@@ -223,7 +223,7 @@ router.post('/api/delete-my-work', async(ctx, next) => {
   }
 });
 
-// 获取书籍的所有章节
+// 获取书籍类别
 router.get('/api/get-categories', async(ctx, next) => {
   var queryString = 'SELECT * FROM category';
   try {
@@ -251,10 +251,23 @@ router.post('/api/upload-new-chapter', async(ctx, next) => {
   }
 });
 
+router.post('/api/get-book-info-by-title', async(ctx, next) => {
+  var bookTitle = ctx.request.body.bookTitle || '';
+  var queryString = `SELECT * FROM book WHERE book.title = '${bookTitle}'`;
+
+  try {
+    var response = await querySQL(queryString);
+    ctx.body = response;
+  } catch (e) {
+    console.log(e);
+    ctx.body = e;
+  }
+});
+
 // 获取书本的所有章节
 router.post('/api/get-book-chapters', async(ctx, next) => {
-  var bookTitle = ctx.request.body.bookTitle || '';
-  var queryString = `SELECT chapterTitle FROM bookChapters JOIN book on book.bid = bookChapters.bid WHERE book.title = '${bookTitle}' ORDER BY chapterIndex`;
+  var bid = ctx.request.body.bid || '';
+  var queryString = `SELECT chapterTitle FROM bookChapters WHERE bid = '${bid}' ORDER BY chapterIndex`;
 
   try {
     var response = await querySQL(queryString);

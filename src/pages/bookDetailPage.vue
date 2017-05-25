@@ -4,11 +4,29 @@
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>{{this.$route.params.title}}</el-breadcrumb-item>
       </el-breadcrumb>
-      <el-row type="flex" justify="center">
+      <el-row type="flex" justify="center" align="bottom">
           <el-col :span="20">
-            <el-row justify="center" style="text-align: center">
-                <h2>{{this.$route.params.title}}</h2>
+            <el-row justify="start" align="bottom" style="text-align: left">
+                <el-col :span="4" :offset="2">
+                    <img :src=bookInfo.coverURL alt="" style="width: 200px">
+                </el-col>
+                <el-col :span="8" :offset="2">
+                    <el-row>
+                        <h2>《{{this.$route.params.title}}》</h2>
+                    </el-row>
+                    <el-row>
+                        <span>作者：{{this.bookInfo.author}}</span><br /><br />
+                        <span>类别：{{this.bookInfo.category}}</span><br /><br />
+                        <span>价格：{{this.bookInfo.price == 0? '免费' : this.bookInfo.price+' 起点币/章'}}</span><br /><br />
+                        <span>标签：{{this.bookInfo.tag || '无'}}</span><br /><br />
+                        <span>简介：{{this.bookInfo.description || '无'}}</span><br /><br />
+                    </el-row>
+                </el-col>
             </el-row>
+
+            <hr>
+            <br>
+            <!--章节列表-->
             <el-row 
                 type="flex" 
                 justify="space-between" 
@@ -36,6 +54,7 @@
         data() {
             return {
                 chaptersRawData: [],
+                bookInfo: {}
             }
         },
         computed: {
@@ -43,17 +62,50 @@
                 return this.chaptersRawData.map(x => x.chapterTitle);
             }
         },
+        methods: {
+            getBookInfoByTitle() {
+                var that = this;
+                return new Promise(function (resolve, reject) {
+                    that.$http.post('/api/get-book-info-by-title', {
+                        bookTitle: that.$route.params.title
+                    })
+                    .then(function (response) {
+                        that.bookInfo = response.data.rows[0];
+                        that.bookInfo.coverURL = 'http://localhost:3000/covers/' + that.bookInfo.coverURL;
+                        resolve('ok');
+                    })
+                    .catch(function (e) {
+                        console.log(e);
+                        reject(e);
+                    })  
+                })
+            },
+            getBookChapters() {
+                var that = this;
+                return new Promise(function (resolve, reject) {
+                    that.$http.post('/api/get-book-chapters', {
+                        bid: that.bookInfo.bid
+                    })
+                    .then(function (response) {
+                        that.chaptersRawData = response.data.rows;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+                })
+            },
+            init: async (that) => {
+                // 获取书本信息，获取章节信息
+                try {
+                    await that.getBookInfoByTitle();
+                    await that.getBookChapters();   
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+        },
         mounted() {
-            var that = this;
-            this.$http.post('/api/get-book-chapters', {
-                bookTitle: this.$route.params.title
-            })
-            .then(function (response) {
-                that.chaptersRawData = response.data.rows;
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
+            this.init(this);
         }
     }
 </script>
@@ -62,5 +114,14 @@
     .chapter-link {
         display: inline-block;
         line-height: 2.5em;
+    }
+
+    hr {
+        border: none;
+        height: 1px;
+        background-color: lightgray;
+        margin: 0 5%;
+        margin-top: 15px;
+        width: auto;
     }
 </style>

@@ -11,7 +11,7 @@
                 <template scope="props">
                 <el-row type="flex" justify="space-between">
                     <el-col :span="8">
-                        <img :src=props.row.coverURL alt="" style="width: 150px">
+                        <img :src=props.row.coverURL alt="" style="width: 160px">
                     </el-col>
                     <el-col :span="16">
                         <el-form label-position="left" inline class="table-expand">
