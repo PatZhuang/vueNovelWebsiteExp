@@ -7,7 +7,7 @@
         </el-breadcrumb-item>
         <el-breadcrumb-item>{{this.$route.params.chapter}}</el-breadcrumb-item>
       </el-breadcrumb>
-      <el-row type="flex" justify="center">
+      <el-row type="flex" justify="center" v-loading="loading">
           <el-col :span="20">
             <el-row justify="center" style="text-align: center">
                 <h2>
@@ -47,7 +47,8 @@
                 rawContent: '',
                 chapterTitle: '',
                 chapterCount: 0,
-                bookInfo: {}
+                bookInfo: {},
+                loading: true
             }
         },
         methods: {
@@ -69,6 +70,7 @@
                 })
             },
             getCurrentChapter() {
+                this.loading = true;
                 var that = this;
                 return new Promise(function (resolve, reject) {
                     that.$http.post('/api/get-chapter', {
@@ -78,10 +80,12 @@
                     .then(function (response) {
                         that.rawContent = response.data.rows[0].content;
                         that.chapterTitle = response.data.rows[0].chapterTitle;
+                        that.loading = false;
                         resolve('ok');
                     })
                     .catch(function (e) {
                         console.log(e);
+                        that.loading = false;
                         reject(e);
                     });
                 });
