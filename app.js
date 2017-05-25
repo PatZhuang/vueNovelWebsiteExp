@@ -6,6 +6,7 @@ const bodyParser = require('koa-bodyparser');
 const server = require('koa-static');
 const path = require('path');
 const url = require('url');
+const fs = require('fs');
  
 // 创建一个Koa对象表示web app本身:
 const app = new Koa();
@@ -446,6 +447,15 @@ router.post('/api/upload-cover', upload.single('cover'), async(ctx) => {
     url: ctx.req.file.path
   };
 }); 
+
+// 删除已上传的封面
+router.post('/api/delete-cover', async(ctx, next) => {
+  var url = ctx.request.body.url;
+  fs.unlinkSync(url);
+  ctx.body = {
+    status: 'success'
+  }
+});
 
 function querySQL(queryString) {
   return new Promise(function (resolve, reject) {

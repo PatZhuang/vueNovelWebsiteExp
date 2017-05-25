@@ -116,68 +116,74 @@
             <el-dialog 
                 title="新作品" 
                 :visible.sync="newWorkDialogVisible"
+                size="full"
                 >
-                <el-form :model="newWorkForm" :label-position="newWorkFormStyle.labelPosition">
-                    <el-form-item 
-                        label="作品名称 *" 
-                        :label-width="newWorkFormStyle.labelWidth">
-                        <el-input v-model="newWorkForm.title" auto-complete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item 
-                        label="副标题" 
-                        :label-width="newWorkFormStyle.labelWidth">
-                        <el-input v-model="newWorkForm.subtitle" auto-complete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item 
-                        label="类别 *" 
-                        :label-width="newWorkFormStyle.labelWidth">
-                        <el-select v-model="newWorkForm.category" placeholder="请选择">
-                            <el-option
-                            v-for="item in bookCategory"
-                            :key="item"
-                            :label="item"
-                            :value="item">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item 
-                        label="标签" 
-                        :label-width="newWorkFormStyle.labelWidth">
-                        <el-input v-model="newWorkForm.tag" auto-complete="off"></el-input>
-                    </el-form-item>     
-                    <el-form-item
-                        label="章节单价"
-                        :label-width="newWorkFormStyle.labelWidth">
-                        <el-input-number v-model="newWorkForm.price" :step="10" :min="0"></el-input-number>
-                        &nbsp;&nbsp;&nbsp;起点币
-                    </el-form-item>
-                    <el-form-item
-                        label="封面"
-                        :label-width="newWorkFormStyle.labelWidth">
-                        <el-upload
-                            drag
-                            action="/api/upload-cover"
-                            :file-list="cover"
-                            :on-success="handleUploadCoverSuccess"
-                            name="cover">
-                            <i class="el-icon-upload"></i>
-                            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-                        </el-upload>
-                    </el-form-item>
-                    <el-form-item 
-                        label="简介" 
-                        :label-width="newWorkFormStyle.labelWidth">
-                        <el-input 
-                            v-model="newWorkForm.description" 
-                            auto-complete="off"
-                            type="textarea"></el-input>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button @click="newWorkDialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="createNewWork()">提 交</el-button>
-                </div>
+                <el-row type="flex" justify="center">
+                    <el-col :span="16">
+                        <el-form :model="newWorkForm" :label-position="newWorkFormStyle.labelPosition">
+                            <el-form-item 
+                                label="作品名称 *" 
+                                :label-width="newWorkFormStyle.labelWidth">
+                                <el-input v-model="newWorkForm.title" auto-complete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item 
+                                label="副标题" 
+                                :label-width="newWorkFormStyle.labelWidth">
+                                <el-input v-model="newWorkForm.subtitle" auto-complete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item 
+                                label="类别 *" 
+                                :label-width="newWorkFormStyle.labelWidth">
+                                <el-select v-model="newWorkForm.category" placeholder="请选择">
+                                    <el-option
+                                    v-for="item in bookCategory"
+                                    :key="item"
+                                    :label="item"
+                                    :value="item">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item 
+                                label="标签" 
+                                :label-width="newWorkFormStyle.labelWidth">
+                                <el-input v-model="newWorkForm.tag" auto-complete="off"></el-input>
+                            </el-form-item>     
+                            <el-form-item
+                                label="章节单价"
+                                :label-width="newWorkFormStyle.labelWidth">
+                                <el-input-number v-model="newWorkForm.price" :step="10" :min="0"></el-input-number>
+                                &nbsp;&nbsp;&nbsp;起点币
+                            </el-form-item>
+                            <el-form-item
+                                label="封面"
+                                :label-width="newWorkFormStyle.labelWidth">
+                                <el-upload
+                                    action="/api/upload-cover"
+                                    :file-list="cover"
+                                    :on-success="handleUploadCoverSuccess"
+                                    :on-remove="handleRemoveCover"
+                                    name="cover">
+                                    <el-button size="small" type="primary">点击上传</el-button>
+                                    <span class="el-upload__tip" slot="tip">
+                                        &nbsp;&nbsp;&nbsp;只能上传jpg/png文件，且不超过500kb
+                                    </span>
+                                </el-upload>
+                            </el-form-item>
+                            <el-form-item 
+                                label="简介" 
+                                :label-width="newWorkFormStyle.labelWidth">
+                                <el-input 
+                                    v-model="newWorkForm.description" 
+                                    auto-complete="off"
+                                    type="textarea"></el-input>
+                            </el-form-item>
+                        </el-form>
+
+                        <br>
+                        <el-button @click="newWorkDialogVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="createNewWork()">提 交</el-button>
+                    </el-col>
+                </el-row>
             </el-dialog>
             <el-col :span="12">
                 <el-input v-model="searchInput" icon="search" style="margin-top: 3px;">
@@ -340,8 +346,18 @@
             },
             handleUploadCoverSuccess(response, file, fileList) {
                 this.newWorkForm.coverURL = response.url;
-                console.log(response.url);
                 this.cover = fileList.slice(-1);
+            },
+            handleRemoveCover(file, fileList) {
+                this.$http.post('/api/delete-cover', {
+                    url: this.newWorkForm.coverURL
+                })
+                .then(function (response) {
+                    
+                })
+                .catch(function (e) {
+                    console.log(e);
+                })
             }
         },
 
