@@ -4,35 +4,45 @@
             :data="tableData"
             stripe
             :default-sort="{prop: 'date', order: 'descending'}" 
-            :height="tableHeight" 
             :max-height="tableHeight"
             style="width: 100%"
             >
             <el-table-column type="expand">
                 <template scope="props">
-                    <el-form label-position="left" inline class="table-expand">
-                    <el-form-item label="作品编号" label-width="80px">
-                        <span>{{ props.row.bid }}</span>
-                    </el-form-item>
-                    <el-form-item label="作品名称" label-width="80px">
-                        <span>《{{ props.row.title }}》</span>
-                    </el-form-item>
-                    <el-form-item label="类别" label-width="80px">
-                        <span>{{ props.row.category }}</span>
-                    </el-form-item>
-                    <el-form-item label="标签" label-width="80px">
-                        <span>{{ props.row.tag || '无' }}</span>
-                    </el-form-item>
-                    <el-form-item label="章节数" label-width="80px">
-                        <span>{{ props.row.chapters || 0 }}</span>
-                    </el-form-item>
-                    <el-form-item label="点击量" label-width="80px">
-                        <span>{{ props.row.clicks || 0 }}</span>
-                    </el-form-item>
-                    <el-form-item label="简介" label-width="80px">
-                        <span>{{ props.row.description || '无' }}</span>
-                    </el-form-item>
-                    </el-form>
+                <el-row type="flex" justify="space-between">
+                    <el-col :span="8">
+                        <img :src=props.row.coverURL alt="" style="width: 150px">
+                    </el-col>
+                    <el-col :span="16">
+                        <el-form label-position="left" inline class="table-expand">
+                            <el-form-item label="作品编号" label-width="80px">
+                                <span>{{ props.row.bid }}</span>
+                            </el-form-item>
+                            <el-form-item label="作品名称" label-width="80px">
+                                <span>《{{ props.row.title }}》</span>
+                            </el-form-item>
+                            <el-form-item label="类别" label-width="80px">
+                                <span>{{ props.row.category }}</span>
+                            </el-form-item>
+                            <el-form-item label="标签" label-width="80px">
+                                <span>{{ props.row.tag || '无' }}</span>
+                            </el-form-item>
+                            <el-form-item label="章节数" label-width="80px">
+                                <span>{{ props.row.chapters || 0 }}</span>
+                            </el-form-item>
+                            <el-form-item label="点击量" label-width="80px">
+                                <span>{{ props.row.clicks || 0 }}</span>
+                            </el-form-item>
+                            <el-form-item label="简介" label-width="80px">
+                                <span>{{ props.row.description || '无' }}</span>
+                            </el-form-item>
+                            <el-form-item label="价格" label-width="80px">
+                                <span v-if="props.row.price == 0">免费</span>
+                                <span v-else> {{props.row.price}} 起点币/章</span>
+                            </el-form-item>
+                        </el-form>
+                    </el-col>
+                </el-row>
                 </template>
             </el-table-column>
             <el-table-column
@@ -200,7 +210,7 @@
         },
         data() {
             return {
-                tableHeight: window.screen.availHeight - 390,
+                tableHeight: window.innerHeight - 100,
                 ID: '',
                 searchInput: '',
                 newWorkDialogVisible: false,
@@ -230,9 +240,15 @@
                 if (keyword) {
                     return this.tableRawData.filter(function(item) {
                         return item.title.toLowerCase().indexOf(keyword.toLowerCase()) != -1;
-                    });   
+                    }).map(item => {
+                        item.coverURL = 'http://localhost:3000/covers/'+item.coverURL;
+                        return item;
+                    });
                 } else {
-                    return this.tableRawData;
+                    return this.tableRawData.map(item => {
+                        item.coverURL = 'http://localhost:3000/covers/'+item.coverURL;
+                        return item;
+                    });
                 }
             },
             catFilter: function() {
@@ -371,7 +387,7 @@
             })
             .catch(function (e) {
                 console.log(e);
-            })
+            });
         }
     }
 </script>

@@ -49,7 +49,7 @@
         searchInput: '',
         searchSelect: '书名',
         selectedBook: [],
-        tableHeight: window.screen.availHeight - 390,
+        tableHeight: window.innerHeight - 100,
         ID: ''
       }
     },

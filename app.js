@@ -444,7 +444,7 @@ const upload = multer({ dest: './staticPages/covers/' });
 router.post('/api/upload-cover', upload.single('cover'), async(ctx) => {
   ctx.body = {
     name: ctx.req.file.filename,
-    url: ctx.req.file.path
+    url: ctx.req.file.path.split('/').slice(-1)
   };
 }); 
 
