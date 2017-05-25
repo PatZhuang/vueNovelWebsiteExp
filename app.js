@@ -276,7 +276,7 @@ router.post('/api/get-chapter', async(ctx, next) => {
 });
 
 // 购买 vip
-router.post('/api/purchase-vip', async(ctx, next) => {
+router.post('/api/purchase', async(ctx, next) => {
   var id = ctx.request.body.id || '',
       money = ctx.request.body.money || 0,
       generateTime = (new Date());
@@ -299,10 +299,9 @@ router.post('/api/purchase-vip', async(ctx, next) => {
   }
 });
 
-router.post('/api/get-vip-expiration', async(ctx, next) => {
+router.post('/api/get-balance', async(ctx, next) => {
   var id = ctx.request.body.id || '';
-  var queryString = `SELECT expiration FROM vip WHERE uid = '${id}'`;
-
+  var queryString = `SELECT balance FROM qidianbi WHERE uid = '${id}'`;
   try {
     var response = await querySQL(queryString);
     ctx.body = response;
@@ -312,40 +311,29 @@ router.post('/api/get-vip-expiration', async(ctx, next) => {
   }
 });
 
-router.post('/api/pay-vip', async(ctx, next) => {
+router.post('/api/pay', async(ctx, next) => {
   var href = ctx.request.body.url || '',
       query = url.parse(href, true).query,
-      duration = ctx.request.body.duration || 0;
+      amount = ctx.request.body.amount || 0;
   var queryString = 'UPDATE vipOrder set completed = 1 WHERE '+
                     `uid = '${query.id}' and mid = '${query.mid}' and generateTime = '${query.generateTime}'`;
   try {
     var response = await querySQL(queryString);
     // 付款成功
-    queryString = `SELECT * FROM vip WHERE uid = '${query.id}'`;
+    queryString = `SELECT * FROM qidianbi WHERE uid = '${query.id}'`;
     try {
       response = await querySQL(queryString);
-      var expireDate = new Date();
+      var balance = 0;
       if (response.rows.length == 1) {
-        // 已经开通过 vip 的处理
-        expireDate.setTime(response.rows[0].expiration);
+        // 已经充值过的处理
+        balance = response.rows[0].balance;
       }
-      // 开通月份处理
-      var month = expireDate.getMonth();
-      if (month + duration > 11) {
-        expireDate.setFullYear(expireDate.getFullYear() + 1);
-        expireDate.setMonth(expireDate.getMonth() + duration - 12);
-      } else {
-        expireDate.setMonth(expireDate.getMonth() + duration);
-      }
-      var formattedDate = expireDate.toLocaleDateString().replace(/\//g, '-') 
-                        + ' ' 
-                        + expireDate.toTimeString().split(' ')[0];
-      
+      balance += amount;
       if (response.rows.length == 0) {
-        queryString = 'INSERT INTO vip (uid, expiration) VALUES'
-                              + `('${query.id}', '${formattedDate}')`;
+        queryString = 'INSERT INTO qidianbi (uid, balance) VALUES'
+                              + `('${query.id}', ${balance})`;
       } else {
-        queryString = `UPDATE vip SET expiration = '${formattedDate}' WHERE uid = '${query.id}'`;
+        queryString = `UPDATE qidianbi SET balance = ${balance} WHERE uid = '${query.id}'`;
       }
       try {
           response = await querySQL(queryString);
@@ -356,14 +344,14 @@ router.post('/api/pay-vip', async(ctx, next) => {
         console.log(e);
         ctx.body = {
           status: 'failed',
-          message: '开通 vip 失败'
+          message: '充值失败'
         }
       }
     } catch (e) {
       console.log(e);
       ctx.body = {
         status: 'failed',
-        message: '查询 vip 状态失败'
+        message: '查询余额失败'
       }
     }
   } catch (e) {
@@ -375,7 +363,7 @@ router.post('/api/pay-vip', async(ctx, next) => {
   }
 });
 
-router.post('/api/vip-purchase-status', async(ctx, next) => {
+router.post('/api/purchase-status', async(ctx, next) => {
   var query = ctx.request.body.query || {};
   var queryString = 'SELECT completed FROM vipOrder WHERE '+
                     `uid = '${query.id}' and mid = '${query.mid}' and generateTime = '${query.generateTime}'`;

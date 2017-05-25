@@ -8,33 +8,27 @@
                             {{form.id}}
                         </span>
                     </el-form-item>
-                    <el-form-item label="到期时间" label-width="100px">
+                    <el-form-item label="账户余额" label-width="100px">
                         <span style="text-algin:left; 
                                     font-size: 20px;
                                     font-weight: 500;
                                     color: #e74c3c;
                                     margin-left: 40px">
-                            {{form.vipExpiration}} 
+                            {{form.balance}} 起点币
                         </span>
-                        <!--<span style="font-size: 14px;">天</span>-->
                     </el-form-item>
                 </el-form>  
             </el-col>
             <el-col :span="12" :offset="3">
                 <el-form ref="form" :model="form" label-width="80px" style="text-align: left;">
-                <el-form-item label="开通对象">
+                <el-form-item label="充值对象">
                 <el-input v-model="form.id" style="width: 300px;" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="开通时长">
-                <el-select v-model="form.duration" placeholder="请选择开通时长">
-                    <el-option label="1个月" value="1"></el-option>
-                    <el-option label="3个月" value="3"></el-option>
-                    <el-option label="6个月" value="6"></el-option>
-                    <el-option label="12个月" value="12"></el-option>
-                </el-select>
+                <el-form-item label="充值数量">
+                    <el-input-number v-model="form.amount" :step="10" :min="10"></el-input-number>
                 </el-form-item>
-                <el-form-item label="开通方式">
-                <el-select v-model="form.method" placeholder="请选择开通方式">
+                <el-form-item label="支付方式">
+                <el-select v-model="form.method" placeholder="请选择支付方式">
                     <el-option label="支付宝" value="alipay"></el-option>
                     <el-option label="微信支付" value="weChatPay"></el-option>
                     <el-option label="银联" value="UnionPay"></el-option>
@@ -43,7 +37,7 @@
                 </el-form-item>
                 <el-form-item label="应付金额">
                     &nbsp;
-                    <span style="color: #e74c3c; font-size: 20px; font-weight: 600;">{{form.duration * 10}}</span>
+                    <span style="color: #e74c3c; font-size: 20px; font-weight: 600;">{{form.amount / 10}}</span>
                     <span>元</span>
                 </el-form-item>
                 <el-form-item>
@@ -62,8 +56,8 @@
       return {
         form: {
           id: '',
-          vipExpiration: '',
-          duration: '1',
+          amount: 10,
+          balance: null,
           method: 'alipay'
         },
         labelPos: 'top',
@@ -75,12 +69,12 @@
       }
     },
     methods: {
-      orderVip() {
+      order() {
         var that = this;
         return new Promise(function (resolve, reject) {
-          that.$http.post('/api/purchase-vip', {
+          that.$http.post('/api/purchase', {
               id: that.form.id,
-              money: that.form.duration * 10
+              money: that.form.amount / 10
             })
             .then(function (response) {
               console.log(response.data);
@@ -96,9 +90,8 @@
         })
       },
       payVip: async(that) => {
-        // var paymentPage = window.open('http://localhost:3000/index.html', '_blank');
         try {
-            await that.orderVip();
+            await that.order();
             var queryString = `?id=${that.query.id}&`
                              +`mid=${that.query.mid}&`
                              +`generateTime=${that.query.generateTime}`;
@@ -110,18 +103,18 @@
       onSubmit() {
           this.payVip(this);            
       },
-      getVipExpiration() {
+      getBalance() {
           var that = this;
-          this.$http.post('/api/get-vip-expiration', {
+          this.$http.post('/api/get-balance', {
               id: this.form.id
           })
           .then(function (response) {
               if (response.data.rows.length == 0) {
-                  that.form.vipExpiration = '未开通';
+                  that.form.balance = 0;
               } else {
-                var expireDate = new Date(response.data.rows[0].expiration); 
-                that.form.vipExpiration = expireDate.toLocaleDateString();
+                  that.form.balance = response.data.rows[0].balance;
               }
+              console.log(that.form.balance);
           })
           .catch(function (error) {
               console.log(error);
@@ -130,7 +123,7 @@
     },
     mounted: function () {
         this.form.id = document.cookie.replace(/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "";
-        this.getVipExpiration();
+        this.getBalance();
     }
   }
   

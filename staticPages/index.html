@@ -30,18 +30,18 @@
         <el-col :span="8">
           <el-card>
             <div slot="header" style="text-align: center">
-              <span style="line-height: 36px; font-weight: 500;">开通起点会员</span>
+              <span style="line-height: 36px; font-weight: 500;">充值起点币</span>
             </div>
             <el-form ref="form" :model="form" label-width="80px" style="text-align: left;">
-                <el-form-item label="开通对象">
+                <el-form-item label="充值对象">
                   <el-input v-model="form.id" style="width: 300px;" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="开通时长">
-                  <el-input v-model="form.duration" style="width: 300px;" disabled></el-input>
+                <el-form-item label="充值数量">
+                  <el-input v-model="form.amount" style="width: 300px;" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="交易金额">
                     &nbsp;
-                    <span style="color: #e74c3c; font-size: 20px; font-weight: 600;">{{form.duration * 10}}</span>
+                    <span style="color: #e74c3c; font-size: 20px; font-weight: 600;">{{form.amount / 10}}</span>
                     <span>元</span>
                 </el-form-item>
                 <el-form-item label="账户名">
@@ -81,8 +81,7 @@
             activeIndex2: '1',
             form: {
               id: '',
-              vipExpiration: '',
-              duration: 0,
+              amount: 0,
               method: 'alipay',
               bankID: '',
               bankPW: ''
@@ -117,9 +116,9 @@
         payVip: function() {
           var that = this;
           return new Promise(function (resolve, reject) {
-            axios.post('/api/pay-vip', {
+            axios.post('/api/pay', {
               url: location.href,
-              duration: Number.parseInt(that.form.duration)
+              amount: Number.parseInt(that.form.amount)
             })
             .then(function (response) {
               var status = response.data.status;
@@ -139,10 +138,11 @@
             await that.payVip();
             setTimeout(function() {
               that.fullscreenLoading = false;
+              that.$refs.confirmBtn.disabled = true;
               that.$notify({
                 title: '付款成功',
                 message: `2秒后回到商家页面`,
-                duration: 2000,
+                duration: 10000,
                 type: 'success',
                 onClose: () => history.back()
               });  
@@ -184,7 +184,7 @@
           })
           .then(function (response) {
             that.form.id = response.data.rows[0].uid;
-            that.form.duration = response.data.rows[0].money / 10;
+            that.form.amount = response.data.rows[0].money * 10;
           })
           .catch(function (e) {
             console.log(e);
