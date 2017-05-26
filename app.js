@@ -165,7 +165,7 @@ router.get('/api/get-all-books', async(ctx, next) => {
 // 添加收藏
 router.post('/api/add-favorite-books', async(ctx, next) => {
   var uid = ctx.request.body.id || '',
-    bid = ctx.request.body.bid || '';
+      bid = ctx.request.body.bid || '';
 
   var queryString = `INSERT INTO favorite (uid, bid) VALUES ('${uid}', ${bid})`;
 
@@ -184,7 +184,9 @@ router.post('/api/get-my-works', async(ctx, next) => {
   var queryString = `SELECT * FROM book JOIN bookDetail ON book.bid = bookDetail.bid WHERE book.author = '${uid}'`;
 
   try {
-    ctx.body = await querySQL(queryString);
+    var response = await querySQL(queryString);
+    console.log(response);
+    ctx.body = response;
   } catch (e) {
     console.log(e);
     ctx.body = e;
