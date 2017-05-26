@@ -139,7 +139,7 @@
                                     if (response.data.status == 'success') {
                                         resolve('order success');
                                     } else {
-                                        reject('order failed');
+                                        reject(response.data.message);
                                     }
                                 })
                                 .catch(function (e) {
@@ -225,6 +225,7 @@
                 } catch (e) {
                     console.log(e);
                     history.back();
+                    that.$message.error(e);
                 }
             })(this);
         },
@@ -238,6 +239,7 @@
                         }
                         await that.getCurrentChapter();   
                     } catch (e) {
+                        that.$message.error(e);
                         console.log(e);
                     }
                 })(this);

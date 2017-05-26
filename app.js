@@ -501,44 +501,36 @@ router.post('/api/order-chapter', async(ctx, next) => {
   console.log('购买章节: ');
   var uid = ctx.request.body.uid || '',
       bid = ctx.request.body.bid || 0,
-      chapterIndex = ctx.request.body.chapterIndex || 0,
-      isAuthor = ctx.request.body.isAuthor || false;
-  var orderQueryString = 'INSERT INTO chapterOrder (uid, bid, chapterIndex, uuid) VALUES('
-                        +`'${uid}', ${bid}, ${chapterIndex}, NULL)`;
+      chapterIndex = ctx.request.body.chapterIndex || 0;
   try {
-    // 先写购买记录
-    await querySQL(orderQueryString);
     // 进入购买流程
-    var balance = '';
-    var price = 0;
-    if (!isAuthor) {
-      // 判断是否为作者，如果不是，需要付费
-      // 获取章节价格
-      var chapterPriceQueryString = `SELECT price FROM book WHERE bid = ${bid}`;
-      response = await querySQL(chapterPriceQueryString);
-      price = response.rows[0].price;
-      // 查询账户余额
-      var balanceQueryString = `SELECT balance FROM qidianbi WHERE uid = '${uid}'`;
-      response = await querySQL(balanceQueryString);
-      var balance = response.rows[0].balance;
-      // 判断余额是否足弓
-      if (balance < price) {
-        // 处理无法付费
-        throw new Error('余额不足');
-      }
+    // 获取章节价格
+    var chapterPriceQueryString = `SELECT price FROM book WHERE bid = ${bid}`;
+    response = await querySQL(chapterPriceQueryString);
+    var price = response.rows[0].price;
+    // 查询账户余额
+    var balanceQueryString = `SELECT balance FROM qidianbi WHERE uid = '${uid}'`;
+    response = await querySQL(balanceQueryString);
+    var balance = response.rows.length != 0? response.rows[0].balance : 0;
+    // 判断余额是否足够
+    if (balance < price) {
+      // 处理无法付费
+      throw new Error('余额不足');
     }
     // 付费
     var payQueryString = `UPDATE qidianbi SET balance = balance-${price} WHERE uid = '${uid}'`;
     await querySQL(payQueryString);
-
+    // 写购买记录
+    var orderQueryString = 'INSERT INTO chapterOrder (uid, bid, chapterIndex, uuid) VALUES('
+                        +`'${uid}', ${bid}, ${chapterIndex}, NULL)`;
+    await querySQL(orderQueryString);
     ctx.body = {
       status: 'success'
     };
   } catch (e) {
-    console.log(e);
     ctx.body = {
       status: 'failed',
-      message: e
+      message: e.message
     };
   }
 });
