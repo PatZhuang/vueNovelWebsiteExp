@@ -48,7 +48,8 @@
                 chapterTitle: '',
                 chapterCount: 0,
                 bookInfo: {},
-                loading: true
+                loading: true,
+                chapterIndex: 0
             }
         },
         methods: {
@@ -74,7 +75,7 @@
                 var that = this;
                 return new Promise(function (resolve, reject) {
                     that.$http.post('/api/get-chapter', {
-                        chapterIndex: Number.parseInt(that.$route.params.chapter),
+                        chapterIndex: Number.parseInt(that.chapterIndex),
                         bid: that.bookInfo.bid
                     })
                     .then(function (response) {
@@ -113,12 +114,27 @@
                         // 免费小说
                         resolve('free');
                     } else {
-                        if (that.$router.params.chapter <= 3) {
+                        if (that.chapterIndex <= 0) {
                             // 试读章节
                             resolve('trial');
                         } else {
                             // 进入付费流程
-                            
+                            that.$http.post('/api/order-chapter', {
+                                uid: that.ID,
+                                bid: that.bookInfo.bid,
+                                chapterIndex: that.chapterIndex,
+                                isAuthor: false
+                            })
+                            .then(function (response) {
+                                if (response.data.status == 'success') {
+                                    resolve('order success');
+                                } else {
+                                    reject('order failed');
+                                }
+                            })
+                            .catch(function (e) {
+                                reject(e);
+                            })
                         }
                     }
                 })
@@ -157,15 +173,21 @@
                 }
             },
         },
+        created() {
+            this.chapterIndex = this.$route.params.chapter;
+            this.ID = document.cookie.replace(/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "";
+        },
         mounted() {
             var that = this;
             (async(that) => {
                 try {
                     await that.getBookInfoByTitle();
                     await that.getChapters();
+                    await that.payChapterNotify();
                     await that.getCurrentChapter();
                 } catch (e) {
                     console.log(e);
+                    history.back();
                 }
             })(this);
         },

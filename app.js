@@ -472,11 +472,12 @@ router.post('/api/delete-cover', async(ctx, next) => {
 
 // 购买章节
 router.post('/api/order-chapter', async(ctx, next) => {
-  var uid = ctx.request.body.id || '',
+  console.log('购买章节: ');
+  var uid = ctx.request.body.uid || '',
       bid = ctx.request.body.bid || 0,
       chapterIndex = ctx.request.body.chapterIndex || 0,
       isAuthor = ctx.request.body.isAuthor || false;
-  var orderQueryString = 'INSERT INTO orderChapter (uid, bid, chapterIndex, uuid) VALUES('
+  var orderQueryString = 'INSERT INTO chapterOrder (uid, bid, chapterIndex, uuid) VALUES('
                         +`'${uid}', ${bid}, ${chapterIndex}, NULL)`;
   try {
     // 先写购买记录
@@ -500,7 +501,7 @@ router.post('/api/order-chapter', async(ctx, next) => {
       }
     }
     // 付费
-    var payQueryString = `UPDATE qidianbi SET balance = balance-${price} WHERE uid = '${query.id}'`;
+    var payQueryString = `UPDATE qidianbi SET balance = balance-${price} WHERE uid = '${uid}'`;
     await querySQL(payQueryString);
     ctx.body = {
       status: 'success'

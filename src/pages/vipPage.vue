@@ -114,7 +114,6 @@
               } else {
                   that.form.balance = response.data.rows[0].balance;
               }
-              console.log(that.form.balance);
           })
           .catch(function (error) {
               console.log(error);
