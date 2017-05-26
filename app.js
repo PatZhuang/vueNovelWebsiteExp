@@ -480,29 +480,38 @@ router.post('/api/order-chapter', async(ctx, next) => {
   var orderQueryString = 'INSERT INTO chapterOrder (uid, bid, chapterIndex, uuid) VALUES('
                         +`'${uid}', ${bid}, ${chapterIndex}, NULL)`;
   try {
-    // 先写购买记录
-    await querySQL(orderQueryString);
-    var balance = '';
-    var price = 0;
-    if (!isAuthor) {
-      // 不是作者，要付钱
-      // 获取章节价格
-      var chapterPriceQueryString = `SELECT price FROM book WHERE bid = ${bid}`;
-      var response = await querySQL(chapterPriceQueryString);
-      price = response.rows[0].price;
-      // 查询余额
-      var balanceQueryString = `SELECT balance FROM qidianbi WHERE uid = '${uid}'`;
-      response = await querySQL(balanceQueryString);
-      var balance = response.rows[0].balance;
-      // 判断是否可以付费
-      if (balance < price) {
-        // 判断无法付费
-        throw new Error('余额不足');
+    // 查看是否购买过
+    var haveOrderedQueryString = 'SELECT * FROM chapterOrder WHERE '
+                                +`uid = '${uid}' and bid = ${bid} and chapterIndex = ${chapterIndex}`;
+    var response = await querySQL(haveOrderedQueryString);
+    if (response.rows.length == 0) {
+      // 无购买记录, 需要购买
+      // 先写购买记录
+      await querySQL(orderQueryString);
+      // 进入购买流程
+      var balance = '';
+      var price = 0;
+      if (!isAuthor) {
+        // 判断是否为作者，如果不是，需要付费
+        // 获取章节价格
+        var chapterPriceQueryString = `SELECT price FROM book WHERE bid = ${bid}`;
+        response = await querySQL(chapterPriceQueryString);
+        price = response.rows[0].price;
+        // 查询账户余额
+        var balanceQueryString = `SELECT balance FROM qidianbi WHERE uid = '${uid}'`;
+        response = await querySQL(balanceQueryString);
+        var balance = response.rows[0].balance;
+        // 判断余额是否足弓
+        if (balance < price) {
+          // 处理无法付费
+          throw new Error('余额不足');
+        }
       }
+      // 付费
+      var payQueryString = `UPDATE qidianbi SET balance = balance-${price} WHERE uid = '${uid}'`;
+      await querySQL(payQueryString);
     }
-    // 付费
-    var payQueryString = `UPDATE qidianbi SET balance = balance-${price} WHERE uid = '${uid}'`;
-    await querySQL(payQueryString);
+
     ctx.body = {
       status: 'success'
     };
