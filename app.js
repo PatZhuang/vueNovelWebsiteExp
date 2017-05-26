@@ -491,7 +491,8 @@ const upload = multer({ dest: './staticPages/covers/' });
 router.post('/api/upload-cover', upload.single('cover'), async(ctx) => {
   ctx.body = {
     name: ctx.req.file.filename,
-    url: ctx.req.file.path.split('/').slice(-1)
+    url: ctx.req.file.path.split('/').slice(-1),
+    bid: ctx.req.body.bid
   };
 }); 
 
@@ -501,6 +502,29 @@ router.post('/api/delete-cover', async(ctx, next) => {
   fs.unlinkSync('./staticPages/covers/'+url);
   ctx.body = {
     status: 'success'
+  }
+});
+
+// 换封面
+router.post('/api/change-cover', async(ctx, next) => {
+  var bid = ctx.request.body.bid || 0,
+      coverURL = ctx.request.body.url || '';
+  var queryString = `UPDATE book SET coverURL = '${coverURL}' WHERE bid = ${bid}`;
+  var coverQueryString = `SELECT coverURL FROM book WHERE bid = ${bid}`;
+  try {
+    var response = await querySQL(coverQueryString);
+    var oldCoverURL = response.rows[0].coverURL;
+    response = await querySQL(queryString);
+    if (oldCoverURL != 'default') {
+      fs.unlinkSync('./staticPages/covers/'+oldCoverURL); 
+    }
+    ctx.body = response;
+  } catch (e) {
+    console.log(e);
+    ctx.body = {
+      status: 'failed',
+      message: e.message
+    }
   }
 });
 

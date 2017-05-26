@@ -40,6 +40,20 @@
                                 <span v-if="props.row.price == 0">免费</span>
                                 <span v-else> {{props.row.price}} 起点币/章</span>
                             </el-form-item>
+                            <el-form-item label="更换封面" label-width="80px" style="width: 100%">
+                                <el-upload
+                                    action="/api/upload-cover"
+                                    :file-list="cover"
+                                    :on-success="handleChangeCoverSuccess"
+                                    :on-remove="handleRemoveCover"
+                                    :data="{bid: props.row.bid}"
+                                    name="cover">
+                                    <el-button size="small" type="primary">点击上传</el-button>
+                                    <span class="el-upload__tip" slot="tip">
+                                        &nbsp;&nbsp;&nbsp;只能上传jpg/png文件，且不超过500kb
+                                    </span>
+                                </el-upload>
+                            </el-form-item>
                         </el-form>
                     </el-col>
                 </el-row>
@@ -210,7 +224,7 @@
         },
         data() {
             return {
-                tableHeight: window.innerHeight - 100,
+                tableHeight: window.innerHeight,
                 ID: '',
                 searchInput: '',
                 newWorkDialogVisible: false,
@@ -254,10 +268,10 @@
             catFilter: function() {
                 var filter = [];
                 for (var data of this.tableData) {
-                var cat = data.category;
-                if (filter.indexOf(cat) === -1) {
-                    filter.push(cat);
-                }
+                    var cat = data.category;
+                    if (filter.indexOf(cat) === -1) {
+                        filter.push(cat);
+                    }
                 }
                 return filter.map(item => {
                 return {
@@ -303,6 +317,7 @@
                       for (var key in that.newWorkForm) {
                           that.newWorkForm[key] = '';
                       }
+                      that.cover = [];
                     })
                     .catch(function (error) {
                       that.$message.error('添加作品失败\n' + error, )
@@ -366,10 +381,26 @@
             },
             handleRemoveCover(file, fileList) {
                 this.$http.post('/api/delete-cover', {
-                    url: this.newWorkForm.coverURL
+                    url: this.newWorkForm.coverURL,
                 })
                 .then(function (response) {
                     
+                })
+                .catch(function (e) {
+                    console.log(e);
+                })
+            },
+            handleChangeCoverSuccess(response, file, fileList) {
+                this.cover = fileList.slice(-1);
+                var that = this;
+                console.log(response);
+                this.$http.post('/api/change-cover', {
+                    url: response.url,
+                    bid: response.bid
+                })
+                .then(function (response) {
+                    that.cover = [];
+                    that.$emit('tableRefreshRequest');
                 })
                 .catch(function (e) {
                     console.log(e);
