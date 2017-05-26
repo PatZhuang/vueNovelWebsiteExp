@@ -105,6 +105,23 @@
                         reject(e);
                     });
                 })
+            },
+            payChapterNotify() {
+                var that = this;
+                return new Promise(function (resolve, reject) {
+                    if (that.bookInfo.price == 0) {
+                        // 免费小说
+                        resolve('free');
+                    } else {
+                        if (that.$router.params.chapter <= 3) {
+                            // 试读章节
+                            resolve('trial');
+                        } else {
+                            // 进入付费流程
+                            
+                        }
+                    }
+                })
             }
         },
         computed: {
@@ -154,7 +171,9 @@
         },
         watch: {
             curChapter: function (newChapter) {
-                this.getCurrentChapter();
+                (async(that) => {
+                    await that.getCurrentChapter();
+                })(this);
             }
         }
     }

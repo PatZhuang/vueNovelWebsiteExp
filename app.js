@@ -455,6 +455,7 @@ router.post('/api/bank-account-login', async(ctx, next) => {
 const upload = multer({ dest: './staticPages/covers/' });
 // 处理封面上传
 router.post('/api/upload-cover', upload.single('cover'), async(ctx) => {
+  console.log(ctx.req.file);
   ctx.body = {
     name: ctx.req.file.filename,
     url: ctx.req.file.path.split('/').slice(-1)
@@ -463,11 +464,24 @@ router.post('/api/upload-cover', upload.single('cover'), async(ctx) => {
 
 // 删除已上传的封面
 router.post('/api/delete-cover', async(ctx, next) => {
-  var url = ctx.request.body.url;
-  fs.unlinkSync(url);
+  var url = ctx.request.body.url[0];
+  console.log(url);
+  fs.unlinkSync('./staticPages/covers/'+url);
   ctx.body = {
     status: 'success'
   }
+});
+
+// 购买章节
+router.post('/api/order-chapter', async(ctx, next) => {
+  var uid = ctx.request.body.id || '',
+      bid = ctx.request.body.bid || 0,
+      chapterIndex = ctx.request.body.chapterIndex || 0,
+      isAuthor = ctx.request.body.isAuthor || false;
+  var orderQueryString = 'INSERT INTO orderChapter (uid, bid, chapterIndex) VALUES('+
+                    `'${uid}', ${bid}, ${chapterIndex})`;
+  var chapterPriceQueryString = `SELECT price FROM book WHERE bid = ${bid}`,
+      payQueryString = `UPDATE qidianbi SET balance = ${balance} WHERE uid = '${query.id}'`;
 });
 
 function querySQL(queryString) {
