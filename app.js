@@ -302,8 +302,8 @@ router.post('/api/purchase', async(ctx, next) => {
                 + ' ' 
                 + generateTime.toTimeString().split(' ')[0];
   console.log(generateTime);
-  var queryString = 'INSERT INTO vipOrder (uid, mid, generateTime, completed, money) VALUES('+
-                    `'${id}', 'qidian', '${generateTime}', 0, ${money})`;
+  var queryString = 'INSERT INTO vipOrder (uid, mid, generateTime, completed, money, uuid) VALUES('+
+                    `'${id}', 'qidian', '${generateTime}', 0, ${money}, NULL)`;
   try {
     await querySQL(queryString);
     ctx.body = {
@@ -455,7 +455,6 @@ router.post('/api/bank-account-login', async(ctx, next) => {
 const upload = multer({ dest: './staticPages/covers/' });
 // 处理封面上传
 router.post('/api/upload-cover', upload.single('cover'), async(ctx) => {
-  console.log(ctx.req.file);
   ctx.body = {
     name: ctx.req.file.filename,
     url: ctx.req.file.path.split('/').slice(-1)
@@ -465,7 +464,6 @@ router.post('/api/upload-cover', upload.single('cover'), async(ctx) => {
 // 删除已上传的封面
 router.post('/api/delete-cover', async(ctx, next) => {
   var url = ctx.request.body.url[0];
-  console.log(url);
   fs.unlinkSync('./staticPages/covers/'+url);
   ctx.body = {
     status: 'success'
@@ -478,10 +476,42 @@ router.post('/api/order-chapter', async(ctx, next) => {
       bid = ctx.request.body.bid || 0,
       chapterIndex = ctx.request.body.chapterIndex || 0,
       isAuthor = ctx.request.body.isAuthor || false;
-  var orderQueryString = 'INSERT INTO orderChapter (uid, bid, chapterIndex) VALUES('+
-                    `'${uid}', ${bid}, ${chapterIndex})`;
-  var chapterPriceQueryString = `SELECT price FROM book WHERE bid = ${bid}`,
-      payQueryString = `UPDATE qidianbi SET balance = ${balance} WHERE uid = '${query.id}'`;
+  var orderQueryString = 'INSERT INTO orderChapter (uid, bid, chapterIndex, uuid) VALUES('
+                        +`'${uid}', ${bid}, ${chapterIndex}, NULL)`;
+  try {
+    // 先写购买记录
+    await querySQL(orderQueryString);
+    var balance = '';
+    var price = 0;
+    if (!isAuthor) {
+      // 不是作者，要付钱
+      // 获取章节价格
+      var chapterPriceQueryString = `SELECT price FROM book WHERE bid = ${bid}`;
+      var response = await querySQL(chapterPriceQueryString);
+      price = response.rows[0].price;
+      // 查询余额
+      var balanceQueryString = `SELECT balance FROM qidianbi WHERE uid = '${uid}'`;
+      response = await querySQL(balanceQueryString);
+      var balance = response.rows[0].balance;
+      // 判断是否可以付费
+      if (balance < price) {
+        // 判断无法付费
+        throw new Error('余额不足');
+      }
+    }
+    // 付费
+    var payQueryString = `UPDATE qidianbi SET balance = balance-${price} WHERE uid = '${query.id}'`;
+    await querySQL(payQueryString);
+    ctx.body = {
+      status: 'success'
+    };
+  } catch (e) {
+    console.log(e);
+    ctx.body = {
+      status: 'failed',
+      message: e
+    };
+  }
 });
 
 function querySQL(queryString) {
