@@ -48,7 +48,7 @@
                 chapterTitle: '',
                 chapterCount: 0,
                 bookInfo: {},
-                loading: true,
+                loading: false,
             }
         },
         methods: {
