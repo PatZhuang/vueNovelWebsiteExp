@@ -49,10 +49,10 @@
                 chapterCount: 0,
                 bookInfo: {},
                 loading: true,
-                chapterIndex: 0
             }
         },
         methods: {
+            // 获取小说详情
             getBookInfoByTitle() {
                 var that = this;
                 return new Promise(function (resolve, reject) {
@@ -70,12 +70,13 @@
                     })  
                 })
             },
+            // 获取当前章节内容
             getCurrentChapter() {
                 this.loading = true;
                 var that = this;
                 return new Promise(function (resolve, reject) {
                     that.$http.post('/api/get-chapter', {
-                        chapterIndex: Number.parseInt(that.chapterIndex),
+                        chapterIndex: Number.parseInt(that.curChapter),
                         bid: that.bookInfo.bid
                     })
                     .then(function (response) {
@@ -91,6 +92,7 @@
                     });
                 });
             },
+            // 获取章节数量
             getChapters() {
                 var that = this;
                 return new Promise(function (resolve, reject) {
@@ -107,6 +109,7 @@
                     });
                 })
             },
+            // 付费提示
             payChapterNotify() {
                 var that = this;
                 return new Promise(function (resolve, reject) {
@@ -114,29 +117,61 @@
                         // 免费小说
                         resolve('free');
                     } else {
-                        if (that.chapterIndex <= 0) {
+                        if (that.curChapter <= 0) {
                             // 试读章节
                             resolve('trial');
                         } else {
                             // 进入付费流程
-                            that.$http.post('/api/order-chapter', {
-                                uid: that.ID,
-                                bid: that.bookInfo.bid,
-                                chapterIndex: that.chapterIndex,
-                                isAuthor: false
+                            that.$confirm(`本章节需要支付 ${that.bookInfo.price} 起点币，是否确认？`, '提示', {
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                type: 'warning'
                             })
-                            .then(function (response) {
-                                if (response.data.status == 'success') {
-                                    resolve('order success');
-                                } else {
-                                    reject('order failed');
-                                }
+                            .then(() => {
+                                // 确认付费，进入付费流程
+                                that.$http.post('/api/order-chapter', {
+                                    uid: that.ID,
+                                    bid: that.bookInfo.bid,
+                                    chapterIndex: that.curChapter,
+                                    isAuthor: false
+                                })
+                                .then(function (response) {
+                                    if (response.data.status == 'success') {
+                                        resolve('order success');
+                                    } else {
+                                        reject('order failed');
+                                    }
+                                })
+                                .catch(function (e) {
+                                    reject(e);
+                                })
                             })
-                            .catch(function (e) {
-                                reject(e);
+                            .catch(() => {
+                                history.back();
                             })
                         }
                     }
+                })
+            },
+            // 查询是否购买过章节
+            checkOrderedChapter() {
+                var that = this;
+                return new Promise(function (resolve, reject) {
+                    that.$http.post('/api/check-ordered-chapter', {
+                        uid: that.ID,
+                        bid: that.bookInfo.bid,
+                        chapterIndex: that.curChapter,
+                    })
+                    .then(function (response) {
+                        if (response.data.ordered) {
+                            resolve(true);
+                        } else {
+                            resolve(false);
+                        }
+                    })
+                    .catch(function (e) {
+                        reject(e);
+                    })
                 })
             }
         },
@@ -174,7 +209,6 @@
             },
         },
         created() {
-            this.chapterIndex = this.$route.params.chapter;
             this.ID = document.cookie.replace(/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/, "$1") || "";
         },
         mounted() {
@@ -183,7 +217,10 @@
                 try {
                     await that.getBookInfoByTitle();
                     await that.getChapters();
-                    await that.payChapterNotify();
+                    var ordered = await that.checkOrderedChapter();
+                    if (!ordered) {
+                        await that.payChapterNotify();   
+                    }
                     await that.getCurrentChapter();
                 } catch (e) {
                     console.log(e);
@@ -194,7 +231,15 @@
         watch: {
             curChapter: function (newChapter) {
                 (async(that) => {
-                    await that.getCurrentChapter();
+                    try {
+                        var ordered = await that.checkOrderedChapter();
+                        if (!ordered) {
+                            await that.payChapterNotify();   
+                        }
+                        await that.getCurrentChapter();   
+                    } catch (e) {
+                        console.log(e);
+                    }
                 })(this);
             }
         }
