@@ -14,7 +14,7 @@
                                     font-weight: 500;
                                     color: #e74c3c;
                                     margin-left: 40px">
-                            {{form.balance}} 起点币
+                            {{form.balance || 0}} 起点币
                         </span>
                     </el-form-item>
                 </el-form>  

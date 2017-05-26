@@ -251,6 +251,7 @@ router.post('/api/upload-new-chapter', async(ctx, next) => {
   }
 });
 
+// 根据标题获得书本信息
 router.post('/api/get-book-info-by-title', async(ctx, next) => {
   var bookTitle = ctx.request.body.bookTitle || '';
   var queryString = `SELECT * FROM book WHERE book.title = '${bookTitle}'`;
@@ -327,6 +328,39 @@ router.post('/api/get-balance', async(ctx, next) => {
   } catch (e) {
     console.log(e);
     ctx.body = e;
+  }
+});
+
+// 获取充值记录
+router.post('/api/get-order-record', async(ctx, next) => {
+  var uid = ctx.request.body.uid || '';
+  var queryString = `SELECT * FROM vipOrder WHERE uid = ${uid}`;
+  try {
+    var response = await querySQL(queryString);
+    ctx.body = response;
+  } catch (e) {
+    console.log(e);
+    ctx.body = {
+      status: 'failed',
+      message: e.message
+    };
+  }
+});
+
+// 获取购买章节记录
+router.post('/api/get-chapter-order-record', async(ctx, next) => {
+  var uid = ctx.request.body.uid || '';
+  var queryString = 'SELECT * FROM chapterOrder JOIN book on chapterOrder.bid = book.bid'
+                  + `WHERE uid = '${uid}'`;
+  try {
+    var response = await querySQL(queryString);
+    ctx.body = response;
+  } catch (e) {
+    console.log(e);
+    ctx.body = {
+      status: 'failed',
+      message: e.message
+    }
   }
 });
 
