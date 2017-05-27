@@ -117,7 +117,7 @@
                         // 免费小说
                         resolve('free');
                     } else {
-                        if (that.curChapter <= 0) {
+                        if (that.curChapter <= 3) {
                             // 试读章节
                             resolve('trial');
                         } else {

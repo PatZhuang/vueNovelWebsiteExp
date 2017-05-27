@@ -112,14 +112,14 @@
                         删除作品
                     </el-button>
                         <el-dialog title="上传章节" :visible.sync="newChapterDialogVisible">
-                        <el-form :model="newChapterForm" :label-position="newWorkFormStyle.labelPosition">
-                            <el-form-item label="章节号" :label-width="newWorkFormStyle.labelWidth">
+                        <el-form :model="newChapterForm" :label-position="newWorkFormStyle.labelPosition" ref="newChapterForm">
+                            <el-form-item label="章节号" :label-width="newWorkFormStyle.labelWidth" prop="chapterIndex">
                                 <el-input v-model="newChapterForm.chapterIndex" auto-complete="off"></el-input>
                             </el-form-item>
-                            <el-form-item label="标题" :label-width="newWorkFormStyle.labelWidth">
+                            <el-form-item label="标题" :label-width="newWorkFormStyle.labelWidth" prop="title">
                                 <el-input v-model="newChapterForm.title" auto-complete="off"></el-input>
                             </el-form-item>
-                            <el-form-item label="内容" :label-width="newWorkFormStyle.labelWidth">
+                            <el-form-item label="内容" :label-width="newWorkFormStyle.labelWidth" prop="content">
                                 <el-input v-model="newChapterForm.content" type="textarea"></el-input>
                             </el-form-item>
                         </el-form>
@@ -239,7 +239,11 @@
                     coverURL: ''
                 },
                 cover: [],
-                newChapterForm: {},
+                newChapterForm: {
+                    chapterIndex: '',
+                    title: '',
+                    content: ''
+                },
                 newWorkFormStyle: {
                     labelWidth: '90px',
                     labelPosition: 'left'
@@ -313,10 +317,6 @@
                         type: 'success'
                       });
                       that.$emit('tableRefreshRequest');
-                      that.newWorkDialogVisible = false;
-                      for (var key in that.newWorkForm) {
-                          that.newWorkForm[key] = '';
-                      }
                       that.cover = [];
                     })
                     .catch(function (error) {
@@ -357,14 +357,15 @@
                         ...this.newChapterForm
                       })
                       .then(function (response) {
+                        that.newChapterDialogVisible = false;
+                        that.$refs.newChapterForm.resetFields();
+                        // for (var key in that.newChapterForm) {
+                        //     that.newChapterForm[key] = '';
+                        // }
                         that.$message({
                           message: '上传新章节成功',
                           type: 'success'
                         });
-                        that.newChapterDialogVisible = false;
-                        for (var key in that.newChapterForm) {
-                            that.newChapterForm[key] = '';
-                        }
                         that.$emit('tableRefreshRequest');
                       })
                       .catch(function (e) {

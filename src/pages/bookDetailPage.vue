@@ -39,10 +39,15 @@
                     v-for="j in 3"
                     :key="j"
                     >
-                    <a :href='"#/book/"+$route.params.title+"/"+((i-1)*3+j)' v-if="chapters[(i-1)*3+j-1]" class="chapter-link">
-                        第 {{(i-1)*3+j}} 章 {{ chapters[(i-1)*3+j-1] }}
-                    </a>
-                    <p v-else> </p>
+                    <span v-if="chapters[(i-1)*3+j-1]">
+                        <a :href='"#/book/"+$route.params.title+"/"+((i-1)*3+j)' class="chapter-link">
+                            第 {{(i-1)*3+j}} 章 {{ chapters[(i-1)*3+j-1] }}
+                        </a>
+                        <span v-if="bookInfo.price != 0">
+                            <el-tag type="success" v-if="i == 1">试读</el-tag>
+                        </span>
+                    </span>
+                    <p v-else></p>
                 </el-col>
             </el-row>
           </el-col>

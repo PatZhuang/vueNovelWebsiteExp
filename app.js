@@ -185,7 +185,6 @@ router.post('/api/get-my-works', async(ctx, next) => {
 
   try {
     var response = await querySQL(queryString);
-    console.log(response);
     ctx.body = response;
   } catch (e) {
     console.log(e);
