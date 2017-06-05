@@ -7,3 +7,4 @@ yarn-error.log*
 module/sqlpool.js
 module/
 staticPages/covers/
+pre/
