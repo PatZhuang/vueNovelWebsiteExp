@@ -4,8 +4,6 @@
       :data="tableData" 
       stripe border fit 
       :default-sort="{prop: 'date', order: 'descending'}" 
-      :height="tableHeight" 
-      :max-height="tableHeight" 
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection">
@@ -49,7 +47,7 @@
         searchInput: '',
         searchSelect: '书名',
         selectedBook: [],
-        tableHeight: window.innerHeight - 100,
+        tableHeight: window.innerHeight - 200,
         ID: ''
       }
     },
