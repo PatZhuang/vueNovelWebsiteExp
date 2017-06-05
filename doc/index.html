@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="031402434 庄逸锋">
+  <title>一个小说网站</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="reveal.js/css/theme/league.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+  <h1 class="title">一个小说网站</h1>
+  <p class="author">031402434 庄逸锋</p>
+  <p class="date">2017.06.05</p>
+</section>
+
+<section><section id="功能概述" class="titleslide slide level1"><h1>功能概述</h1></section><section class="slide level6">
+
+<figure>
+<img src="images/index.jpg" alt="index" /><figcaption>index</figcaption>
+</figure>
+</section><section class="slide level6">
+
+<figure>
+<img src="images/cat.png" alt="分类浏览" /><figcaption>分类浏览</figcaption>
+</figure>
+</section><section class="slide level6">
+
+<figure>
+<img src="images/fav.png" alt="读者收藏" /><figcaption>读者收藏</figcaption>
+</figure>
+</section><section class="slide level6">
+
+<figure>
+<img src="images/author.png" alt="作者页" /><figcaption>作者页</figcaption>
+</figure>
+</section><section class="slide level6">
+
+<figure>
+<img src="images/book.png" alt="小说详情页" /><figcaption>小说详情页</figcaption>
+</figure>
+</section><section class="slide level6">
+
+<figure>
+<img src="images/chapter.png" alt="章节页" /><figcaption>章节页</figcaption>
+</figure>
+</section><section class="slide level6">
+
+<figure>
+<img src="images/pay.png" alt="充值页" /><figcaption>充值页</figcaption>
+</figure>
+</section><section class="slide level6">
+
+<figure>
+<img src="images/payment.png" alt="付款页" /><figcaption>付款页</figcaption>
+</figure>
+</section></section>
+<section><section id="代码结构" class="titleslide slide level1"><h1>代码结构</h1></section><section class="slide level6">
+
+<pre><code>.
+├── README.md
+├── _config.yml
+├── app.js
+├── build
+│   ├── build.js
+│   ├── check-versions.js
+│   ├── dev-client.js
+│   ├── dev-server.js
+│   ├── utils.js
+│   ├── vue-loader.conf.js
+│   ├── webpack.base.conf.js
+│   ├── webpack.dev.conf.js
+│   └── webpack.prod.conf.js
+├── config
+│   ├── dev.env.js
+│   ├── index.js
+│   └── prod.env.js
+├── index.html
+├── list.txt
+├── module
+│   ├── qiniu.js
+│   └── sqlpool.js
+├── package.json
+├── src
+│   ├── App.vue
+│   ├── assets
+│   │   ├── ads
+│   │   ├── ebook
+│   │   ├── logo.png
+│   │   └── payment
+│   ├── components
+│   │   ├── adrow.vue
+│   │   ├── favoriteTable.vue
+│   │   ├── myWorksTable.vue
+│   │   └── trendingCol.vue
+│   ├── main.js
+│   ├── pages
+│   │   ├── allBooksPage.vue
+│   │   ├── bookDetailPage.vue
+│   │   ├── chapterPage.vue
+│   │   ├── ebookPage.vue
+│   │   ├── index.vue
+│   │   ├── personalPage.vue
+│   │   ├── recommendPage.vue
+│   │   ├── trendingPage.vue
+│   │   └── vipPage.vue
+│   └── router
+│       └── index.js
+├── static
+├── staticPages
+│   ├── covers
+│   │   ├── 01283d80d1061edb743cbd7587b46ef5
+│   │   ├── default
+│   │   ├── dfb79141d4874907b0e5953b9b193626
+│   │   └── e02517c139098981b97f6a6e7cc99a63
+│   └── index.html
+└── test.js</code></pre>
+</section></section>
+<section><section id="数据库构成" class="titleslide slide level1"><h1>数据库构成</h1></section><section class="slide level6">
+
+<figure>
+<img src="images/ER.png" />
+</figure>
+</section></section>
+<section><section id="没了" class="titleslide slide level1"><h1>没了</h1></section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Transition style
+        transition: 'convex', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+              { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

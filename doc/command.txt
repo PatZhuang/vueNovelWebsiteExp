@@ -1,0 +1,1 @@
+pandoc HelloWorld.md -o slides.html -t revealjs -s --variable theme="league" --variable transition="convex" 
