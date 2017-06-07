@@ -40,6 +40,17 @@
 
 ---
 
+## 语言框架
+
+- 前端：Vue.js + ElementUI
+- 后端：Koa
+
+> JavaScript 是世界上最好的语言
+
+---
+
+## 目录结构
+
 ```
 .
 ├── README.md
